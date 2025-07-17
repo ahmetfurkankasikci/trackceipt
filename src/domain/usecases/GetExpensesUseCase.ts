@@ -5,6 +5,6 @@ export class GetExpensesUseCase {
     constructor(private expenseRepository: IExpenseRepository) {}
 
     async execute(): Promise<Expense[]> {
-        return await this.expenseRepository.getAllExpenses();
+        return new Promise<Expense[]>((resolve) => this.expenseRepository.getAllExpenses(resolve));
     }
 }

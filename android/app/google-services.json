@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "604247551787",
+    "project_id": "trackceipt",
+    "storage_bucket": "trackceipt.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:604247551787:android:2fc32d678e274a908c9f6e",
+        "android_client_info": {
+          "package_name": "com.trackceipt"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7GkkT-XjdbDxK5H01KdJczniF__mmIK8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

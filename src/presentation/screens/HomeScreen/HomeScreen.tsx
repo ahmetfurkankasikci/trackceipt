@@ -2,16 +2,16 @@ import React, { FC, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { HomeViewModel } from './HomeViewModel';
 import { GetExpensesUseCase } from '../../../domain/usecases/GetExpensesUseCase';
-import { MockExpenseRepositoryImpl } from '../../../data/repositories/MockExpenseRepositoryImpl';
+import { FirestoreExpenseRepositoryImpl } from '../../../data/repositories/FirestoreExpenseRepositoryImpl';
 
 const HomeScreen: FC = () => {
-    const expenseRepository = new MockExpenseRepositoryImpl();
+    const expenseRepository = new FirestoreExpenseRepositoryImpl();
     const viewModel = new HomeViewModel(new GetExpensesUseCase(expenseRepository));
     const [expenses, setExpenses] = useState(viewModel.expenses);
     useEffect(() => {
         const load = async () => {
             await viewModel.loadExpenses();
-            setExpenses(viewModel.expenses);
+            setExpenses([...viewModel.expenses]);
         }
         load()
         // eslint-disable-next-line react-hooks/exhaustive-deps
