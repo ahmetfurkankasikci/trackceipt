@@ -1,4 +1,9 @@
 {
   "name": "trackceipt",
-  "displayName": "trackceipt"
+  "displayName": "trackceipt",
+  "extra": {
+    "eas": {
+      "projectId": "7acf06e7-efe3-4551-ac71-a66883e4642a"
+    }
+  }
 }

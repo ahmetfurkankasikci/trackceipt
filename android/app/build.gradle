@@ -81,7 +81,7 @@ android {
     namespace "com.trackceipt"
     defaultConfig {
         applicationId "com.trackceipt"
-        minSdkVersion rootProject.ext.minSdkVersion
+        minSdkVersion 30
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"

@@ -1,3 +1,13 @@
 {
-  "extends": "@react-native/typescript-config"
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    /*
+      Bu iki satırı ekleyin.
+      'experimentalDecorators', @inject gibi decorator'ların kullanımına izin verir.
+      'emitDecoratorMetadata', tsyringe'in enjekte edilecek tipleri (class, interface vb.)
+      anlaması için gereklidir.
+    */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
 }

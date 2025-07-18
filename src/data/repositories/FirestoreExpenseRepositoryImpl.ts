@@ -81,7 +81,7 @@ export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
    * Verilen masraf nesnesini Firestore'a yeni bir belge olarak ekler.
    * @param expense Eklenecek olan masraf nesnesi.
    */
-  async addExpense(expense: Omit<Expense, 'id'>): Promise<void> {
+  async addExpense(expense: Expense): Promise<void> {
     try {
       // Belge ekleme işlemi web SDK'sındaki 'addDoc' yerine '.add' metodu ile yapılır.
       await this.expensesCollection.add(expense);
