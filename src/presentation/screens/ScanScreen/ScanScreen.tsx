@@ -10,7 +10,7 @@ import {
 } from 'react-native-image-picker';
 import { useScanViewModel } from './useScanViewModel'; // ViewModel'i import et
 import { useNavigation } from '@react-navigation/native';
-import { AppNavigationProp } from '../../navigation/AppNavigator';
+import { AppNavigationProp } from '../../navigation/types';
 
 const ScanScreen: FC = () => {
   const navigation = useNavigation<AppNavigationProp>();
@@ -43,8 +43,8 @@ const ScanScreen: FC = () => {
     if (selectedImage?.base64) {
       const success = await analyzeReceipt(selectedImage.base64);
       if (success) {
-        Alert.alert('Başarılı!', 'Fişiniz başarıyla analiz edilip masraflara eklendi.');
         setSelectedImage(null); // İşlem sonrası resmi temizle
+        navigation.navigate('Home', { newExpenseAdded: true });
         navigation.goBack()
       } else {
         // Hata durumu için kullanıcıya anlık bir uyarı gösteriyoruz.
