@@ -10,6 +10,12 @@ import { FirestoreExpenseRepositoryImpl } from '../../data/repositories/Firestor
 import { AiVisionService } from '../../data/services/AiVisionService';
 import { GetExpensesUseCase } from '../../domain/usecases/GetExpensesUseCase';
 import { AnalyzeAndAddExpenseUseCase } from '../../domain/usecases/AnalyzeAndAddExpenseUseCase';
+import { IAuthRepository } from '../../domain/repositories/IAuthRepository';
+import { FirebaseAuthRepositoryImpl } from '../../data/repositories/FirebaseAuthRepositoryImpl';
+import { OnAuthStateChangedUseCase } from '../../domain/usecases/OnAuthStateChangedUseCase';
+import { LogoutUseCase } from '../../domain/usecases/LogoutUseCase';
+import { LoginUseCase } from '../../domain/usecases/LoginUseCase';
+import { SignUpUseCase } from '../../domain/usecases/SignUpUseCase';
 
 // --- Bağımlılıkların Kaydedilmesi (Dependency Registration) ---
 
@@ -36,6 +42,23 @@ container.register(AnalyzeAndAddExpenseUseCase, {
 container.register(GetExpensesUseCase, {
   useFactory: (c) => new GetExpensesUseCase(c.resolve('IExpenseRepository'))
 });
+container.registerSingleton<IAuthRepository>('IAuthRepository', FirebaseAuthRepositoryImpl);
 
+
+container.register(SignUpUseCase, {
+  useFactory: (c) => new SignUpUseCase(c.resolve('IAuthRepository'))
+});
+
+container.register(LoginUseCase, {
+  useFactory: (c) => new LoginUseCase(c.resolve('IAuthRepository'))
+});
+
+container.register(LogoutUseCase, {
+  useFactory: (c) => new LogoutUseCase(c.resolve('IAuthRepository'))
+});
+
+container.register(OnAuthStateChangedUseCase, {
+  useFactory: (c) => new OnAuthStateChangedUseCase(c.resolve('IAuthRepository'))
+});
 
 export default container;

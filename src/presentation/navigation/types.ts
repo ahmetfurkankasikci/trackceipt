@@ -8,6 +8,8 @@ export type RootStackParamList = {
   // Home ekranı artık bir "yeni masraf eklendi" parametresi alabilir.
   Home: { newExpenseAdded?: boolean } | undefined;
   Scan: undefined;
+  Login: undefined;
+  SignUp: undefined;
 };
 
 // Tüm ekranların kullanabileceği genel bir navigasyon tipi.

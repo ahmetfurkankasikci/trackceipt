@@ -3,7 +3,7 @@
 // ÖNEMLİ: Artık web SDK'sı yerine @react-native-firebase kütüphanelerini kullanıyoruz.
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
-import { Expense } from '../../domain/models/Expense';
+import Expense from '../../domain/models/Expense';
 import { IExpenseRepository } from '../../domain/repositories/IExpenseRepository';
 
 /**
@@ -25,17 +25,17 @@ export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
    * @param onExpensesUpdate Masraflar güncellendiğinde çağrılacak olan callback fonksiyonu.
    * @returns Dinleyiciyi sonlandırmak için kullanılabilecek bir fonksiyon.
    */
-  getAllExpenses(onExpensesUpdate: (expenses: Expense[]) => void): () => void {
+  getAllExpenses(userId: string, onExpensesUpdate: (expenses: Expense[]) => void): () => void {
     // Sorguyu oluşturma şekli web SDK'sından biraz farklıdır.
     // Direkt koleksiyon referansı üzerinden .orderBy() çağrılır.
-    const query = this.expensesCollection.orderBy('date', 'desc');
+    const query = this.expensesCollection.where("userId", "==", userId).orderBy('date', 'desc');
     console.log("query")
     console.log(query);
     // onSnapshot metodu direkt sorgu üzerinden çağrılır.
     const unsubscribe = query.onSnapshot((querySnapshot) => {
       // Hata kontrolü eklemek iyi bir pratiktir.
       if (!querySnapshot) {
-        console.error("querySnapshot is null or undefined.");
+        onExpensesUpdate([]);
         return;
       }
 
@@ -53,6 +53,7 @@ export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
           // Veri dönüşümü (mapping) aynı kalır, sadece Timestamp'in tipi değişir.
           return {
             id: doc.id,
+            userId: data.userId,
             amount: data.amount,
             category: data.category,
             description: data.description,

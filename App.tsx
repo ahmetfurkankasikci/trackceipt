@@ -2,7 +2,9 @@ import { PermissionsAndroid, Platform } from 'react-native';
 import { useEffect } from 'react';
 import AppNavigator from './src/presentation/navigation/AppNavigator';
 import 'reflect-metadata'; // <-- BU İLK IMPORT OLMALI
-import './src/core/di/container'; 
+import './src/core/di/container';
+import { Provider } from 'react-redux';
+import { store } from './src/core/redux/store';
 function App() {
   useEffect(() => {
     async function requestPermissions() {
@@ -30,7 +32,9 @@ function App() {
     requestPermissions();
   }, [])
   return (
-    <AppNavigator />
+    <Provider store={store}>
+      <AppNavigator />
+    </Provider>
   );
 }
 

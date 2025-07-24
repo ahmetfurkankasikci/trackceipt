@@ -2,7 +2,7 @@
 
 import { AiVisionService, AnalyzedExpenseData } from '../../data/services/AiVisionService';
 import type { IExpenseRepository } from '../repositories/IExpenseRepository';
-import { Expense } from '../models/Expense';
+import Expense from '../models/Expense';
 import { injectable, inject } from 'tsyringe';
 
 /**
@@ -16,7 +16,7 @@ export class AnalyzeAndAddExpenseUseCase {
         @inject('IExpenseRepository') private readonly expenseRepository: IExpenseRepository,
     ) { }
 
-    async execute(base64Image: string): Promise<void> {
+    async execute(base64Image: string, userId: string): Promise<void> {
         try {
             // 1. Adım: AI servisi ile fişi analiz et.
             const analyzedData: AnalyzedExpenseData = await this.aiVisionService.analyzeReceipt(base64Image);
@@ -28,6 +28,7 @@ export class AnalyzeAndAddExpenseUseCase {
 
             const newExpense: Expense = {
                 amount: analyzedData.totalAmount,
+                userId: userId,
                 category: 'Analiz Edildi', // Veya kullanıcıya seçtirilebilir
                 description: analyzedData.shopName || 'İsimsiz Mağaza',
                 date: new Date(analyzedData.transactionDate),

@@ -1,7 +1,7 @@
-import { Expense } from "../models/Expense";
+import Expense  from "../models/Expense";
 
 export interface IExpenseRepository {
-    getAllExpenses(onExpensesUpdate: (expenses: Expense[]) => void): () => void;
+    getAllExpenses(userId: string,onExpensesUpdate: (expenses: Expense[]) => void): () => void;
     getExpenseById(id: number): Promise<Expense | null>;
     addExpense(expense: Expense): Promise<void>;
 }

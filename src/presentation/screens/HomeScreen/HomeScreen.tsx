@@ -5,7 +5,7 @@ import { View, Text, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity }
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { AppNavigationProp, HomeScreenRouteProp } from '../../navigation/types';
 import { useHomeViewModel } from './useHomeViewModel'; // Sadece ViewModel hook'unu import ediyoruz.
-import { Expense } from '../../../domain/models/Expense';
+import Expense from '../../../domain/models/Expense';
 
 const HomeScreen: React.FC = () => {
     // Artık 'new' ile manuel oluşturma yok!
