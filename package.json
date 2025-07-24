@@ -24,6 +24,7 @@
     "react-native-permissions": "^5.4.1",
     "react-native-safe-area-context": "^5.5.2",
     "react-native-screens": "^4.13.0",
+    "react-native-swipe-list-view": "^3.2.9",
     "react-native-vision-camera": "^4.7.0",
     "react-redux": "^9.2.0",
     "reflect-metadata": "^0.2.2",

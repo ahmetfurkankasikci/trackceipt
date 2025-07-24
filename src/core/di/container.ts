@@ -16,6 +16,7 @@ import { OnAuthStateChangedUseCase } from '../../domain/usecases/OnAuthStateChan
 import { LogoutUseCase } from '../../domain/usecases/LogoutUseCase';
 import { LoginUseCase } from '../../domain/usecases/LoginUseCase';
 import { SignUpUseCase } from '../../domain/usecases/SignUpUseCase';
+import { DeleteExpenseUseCase } from '../../domain/usecases/DeleteExpenseUseCase';
 
 // --- Bağımlılıkların Kaydedilmesi (Dependency Registration) ---
 
@@ -31,7 +32,9 @@ container.registerSingleton(AiVisionService);
 // tsyringe otomatik olarak bir FirestoreExpenseRepositoryImpl örneği sağlayacaktır.
 container.registerSingleton<IExpenseRepository>('IExpenseRepository', FirestoreExpenseRepositoryImpl);
 
-
+container.register(DeleteExpenseUseCase, {
+  useFactory: (c) => new DeleteExpenseUseCase(c.resolve('IExpenseRepository'))
+})
 container.register(AnalyzeAndAddExpenseUseCase, {
   useFactory: (c) => new AnalyzeAndAddExpenseUseCase(
     c.resolve(AiVisionService),
@@ -60,5 +63,7 @@ container.register(LogoutUseCase, {
 container.register(OnAuthStateChangedUseCase, {
   useFactory: (c) => new OnAuthStateChangedUseCase(c.resolve('IAuthRepository'))
 });
+
+
 
 export default container;

@@ -1,5 +1,6 @@
 export default class Expense {
   constructor(
+    public id: string,
     public category: string,
     public amount: number,
     public date: Date,

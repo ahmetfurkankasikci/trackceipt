@@ -5,6 +5,7 @@ import { container } from 'tsyringe';
 import { GetExpensesUseCase } from '../../../domain/usecases/GetExpensesUseCase';
 import type Expense from '../../../domain/models/Expense';
 import { useSelector } from 'react-redux';
+import { DeleteExpenseUseCase } from '../../../domain/usecases/DeleteExpenseUseCase';
 import { AppRootState } from '../../../core/redux/store';
 
 export const useHomeViewModel = () => {
@@ -16,8 +17,9 @@ export const useHomeViewModel = () => {
 
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-useEffect(() => {
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const deleteExpenseUseCase = useMemo(() => container.resolve(DeleteExpenseUseCase), []);
+  useEffect(() => {
     // Eğer kullanıcı giriş yapmışsa, onun masraflarını dinlemeye başla.
     if (user) {
       const unsubscribe = getExpensesUseCase.execute(user.uid, (updatedExpenses) => {
@@ -31,9 +33,23 @@ useEffect(() => {
       setIsLoading(false);
     }
   }, [user, getExpensesUseCase, isLoading]);
-
+  // Yeni silme fonksiyonu
+  const handleDeleteExpense = async (expenseId: string) => {
+    setDeletingId(expenseId); // Silme indicator'ını başlat
+    try {
+      await deleteExpenseUseCase.execute(expenseId);
+      // Başarılı silme sonrası, onSnapshot dinleyicisi listeyi otomatik güncelleyecektir.
+    } catch (error) {
+      console.error("Masraf silinemedi:", error);
+      // Burada kullanıcıya bir hata uyarısı gösterilebilir.
+    } finally {
+      setDeletingId(null); // Indicator'ı kaldır
+    }
+  };
   return {
     expenses,
     isLoading,
+    deletingId,
+    handleDeleteExpense,
   };
 };

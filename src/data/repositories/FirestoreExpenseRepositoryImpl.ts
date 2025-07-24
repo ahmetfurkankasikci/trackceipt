@@ -12,6 +12,15 @@ import { IExpenseRepository } from '../../domain/repositories/IExpenseRepository
  * yapılandırılmış Firebase projeleri için en doğru ve performanslı yöntemdir.
  */
 export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
+  async deleteExpense(expenseId: string): Promise<void> {
+    try {
+      // Silme işlemi, native SDK'nın kendi metot zinciriyle yapılır.
+      await firestore().collection('expenses').doc(expenseId).delete();
+    } catch (error) {
+      console.error("Firestore'dan masraf silinirken hata oluştu: ", error);
+      throw new Error('Masraf silinemedi.');
+    }
+  }
   getExpenseById(id: number): Promise<Expense | null> {
     throw new Error(`Method not implemented.${id}`);
   }
@@ -25,7 +34,7 @@ export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
    * @param onExpensesUpdate Masraflar güncellendiğinde çağrılacak olan callback fonksiyonu.
    * @returns Dinleyiciyi sonlandırmak için kullanılabilecek bir fonksiyon.
    */
-  getAllExpenses(userId: string,onExpensesUpdate: (expenses: Expense[]) => void): () => void {
+  getAllExpenses(userId: string, onExpensesUpdate: (expenses: Expense[]) => void): () => void {
     // Sorguyu oluşturma şekli web SDK'sından biraz farklıdır.
     // Direkt koleksiyon referansı üzerinden .orderBy() çağrılır.
     const query = this.expensesCollection.where("userId", "==", userId);
