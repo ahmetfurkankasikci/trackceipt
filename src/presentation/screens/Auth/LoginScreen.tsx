@@ -17,6 +17,7 @@ const LoginScreen: FC = () => {
             <TextInput
                 style={styles.input}
                 placeholder="E-posta"
+                placeholderTextColor={'black'}
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -25,6 +26,7 @@ const LoginScreen: FC = () => {
             <TextInput
                 style={styles.input}
                 placeholder="Şifre"
+                placeholderTextColor={'black'}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
@@ -46,7 +48,7 @@ const LoginScreen: FC = () => {
 const styles = StyleSheet.create({
     container: { flex: 1, justifyContent: 'center', padding: 20 },
     title: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 },
-    input: { height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10, paddingHorizontal: 10 },
+    input: { height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10, paddingHorizontal: 10,color:'black' },
     error: { color: 'red', textAlign: 'center', marginVertical: 10 },
 });
 

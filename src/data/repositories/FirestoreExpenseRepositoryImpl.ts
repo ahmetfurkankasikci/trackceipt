@@ -25,17 +25,17 @@ export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
    * @param onExpensesUpdate Masraflar güncellendiğinde çağrılacak olan callback fonksiyonu.
    * @returns Dinleyiciyi sonlandırmak için kullanılabilecek bir fonksiyon.
    */
-  getAllExpenses(userId: string, onExpensesUpdate: (expenses: Expense[]) => void): () => void {
+  getAllExpenses(userId: string,onExpensesUpdate: (expenses: Expense[]) => void): () => void {
     // Sorguyu oluşturma şekli web SDK'sından biraz farklıdır.
     // Direkt koleksiyon referansı üzerinden .orderBy() çağrılır.
-    const query = this.expensesCollection.where("userId", "==", userId).orderBy('date', 'desc');
+    const query = this.expensesCollection.where("userId", "==", userId);
     console.log("query")
     console.log(query);
     // onSnapshot metodu direkt sorgu üzerinden çağrılır.
     const unsubscribe = query.onSnapshot((querySnapshot) => {
       // Hata kontrolü eklemek iyi bir pratiktir.
       if (!querySnapshot) {
-        onExpensesUpdate([]);
+        console.error("querySnapshot is null or undefined.");
         return;
       }
 

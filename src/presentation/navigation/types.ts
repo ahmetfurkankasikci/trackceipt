@@ -10,6 +10,7 @@ export type RootStackParamList = {
   Scan: undefined;
   Login: undefined;
   SignUp: undefined;
+  Profile: undefined;
 };
 
 // Tüm ekranların kullanabileceği genel bir navigasyon tipi.
