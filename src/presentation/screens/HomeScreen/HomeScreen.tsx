@@ -1,6 +1,6 @@
 // src/presentation/screens/HomeScreen/HomeScreen.tsx
 
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, Alert, TouchableHighlight } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { AppNavigationProp, HomeScreenRouteProp } from '../../navigation/types';
@@ -8,7 +8,7 @@ import { useHomeViewModel } from './useHomeViewModel'; // Sadece ViewModel hook'
 import Expense from '../../../domain/models/Expense';
 import { SwipeListView } from 'react-native-swipe-list-view';
 
-const HomeScreen: React.FC = () => {
+const HomeScreen: FC = () => {
     // Artık 'new' ile manuel oluşturma yok!
     // Tüm mantık ve state, ViewModel hook'unun içinde saklı.
     const { expenses, isLoading, handleDeleteExpense } = useHomeViewModel();
@@ -40,12 +40,12 @@ const HomeScreen: React.FC = () => {
             `"${item.description}" adlı masrafı silmek istediğinizden emin misiniz?`,
             [
                 { text: "İptal", style: "cancel" },
-                { text: "Sil", onPress: () => handleDeleteExpense(item.id), style: "destructive" },
+                { text: "Sil", onPress: () => handleDeleteExpense(item.id ?? ""), style: "destructive" },
             ]
         );
     };
     const renderExpenseItem = ({ item }: { item: Expense }) => (
-        <TouchableHighlight style={styles.rowFront} underlayColor={'#eee'}>
+        <TouchableHighlight onPress={() => navigation.navigate('ExpenseDetail', { expense: item })}  style={styles.rowFront} underlayColor={'#eee'}>
             <View style={styles.itemContainer}>
                 <View>
                     <Text style={styles.itemDescription}>{item.description || 'Açıklama Yok'}</Text>
@@ -87,7 +87,7 @@ const HomeScreen: React.FC = () => {
                 previewRowKey={'0'}
                 previewOpenValue={-40}
                 previewOpenDelay={3000}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id ?? ""}
                 contentContainerStyle={expenses.length === 0 ? styles.flex : {}}
                 ListEmptyComponent={
                     <View style={styles.centerContainer}>

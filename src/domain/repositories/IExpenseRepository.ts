@@ -5,4 +5,5 @@ export interface IExpenseRepository {
     getExpenseById(id: number): Promise<Expense | null>;
     addExpense(expense: Expense): Promise<void>;
     deleteExpense(expenseId: string): Promise<void>;
+    updateExpense(expense: Expense): Promise<void>;
 }

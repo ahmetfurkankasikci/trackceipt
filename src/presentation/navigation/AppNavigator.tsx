@@ -19,6 +19,7 @@ import { setUser } from '../../core/redux/slices/authSlice';
 import { OnAuthStateChangedUseCase } from '../../domain/usecases/OnAuthStateChangedUseCase';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
+import ExpenseDetailScreen from '../screens/ExpenseDetail/ExpenseDetailScreen';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 // --- Navigasyon Yığınları (Stacks) ---
 
@@ -39,6 +40,7 @@ const MainStack = () => (
     <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Masraflarım', headerRight: ProfileHeaderButton, }} />
     <Stack.Screen name="Scan" component={ScanScreen} options={{ title: 'Fiş Tara', presentation: 'modal' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: 'Profil' }} />
+    <Stack.Screen name="ExpenseDetail" component={ExpenseDetailScreen} options={{ title: 'Masraf Detayı' }} />
   </Stack.Navigator>
 );
 
@@ -94,7 +96,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-   headerButton: {
+  headerButton: {
     marginRight: 15,
     padding: 5,
   },

@@ -32,7 +32,6 @@ export class AnalyzeAndAddExpenseUseCase {
                 category: 'Analiz Edildi', // Veya kullanıcıya seçtirilebilir
                 description: analyzedData.shopName || 'İsimsiz Mağaza',
                 date: new Date(analyzedData.transactionDate),
-                // İleride resim URL'si de saklanabilir.
             };
 
             // 3. Adım: Oluşturulan masrafı repository aracılığıyla veritabanına ekle.

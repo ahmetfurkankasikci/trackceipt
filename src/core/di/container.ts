@@ -17,6 +17,7 @@ import { LogoutUseCase } from '../../domain/usecases/LogoutUseCase';
 import { LoginUseCase } from '../../domain/usecases/LoginUseCase';
 import { SignUpUseCase } from '../../domain/usecases/SignUpUseCase';
 import { DeleteExpenseUseCase } from '../../domain/usecases/DeleteExpenseUseCase';
+import { UpdateExpenseUseCase } from '../../domain/usecases/UpdateExpenseUseCase';
 
 // --- Bağımlılıkların Kaydedilmesi (Dependency Registration) ---
 
@@ -62,6 +63,9 @@ container.register(LogoutUseCase, {
 
 container.register(OnAuthStateChangedUseCase, {
   useFactory: (c) => new OnAuthStateChangedUseCase(c.resolve('IAuthRepository'))
+});
+container.register(UpdateExpenseUseCase, {
+  useFactory: (c) => new UpdateExpenseUseCase(c.resolve('IExpenseRepository'))
 });
 
 

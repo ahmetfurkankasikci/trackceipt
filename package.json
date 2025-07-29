@@ -19,6 +19,7 @@
     "firebase": "^11.10.0",
     "react": "19.1.0",
     "react-native": "0.80.1",
+    "react-native-date-picker": "^5.0.13",
     "react-native-dotenv": "^3.4.11",
     "react-native-image-picker": "^8.2.1",
     "react-native-permissions": "^5.4.1",

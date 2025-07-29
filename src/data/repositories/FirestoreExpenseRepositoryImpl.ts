@@ -12,6 +12,16 @@ import { IExpenseRepository } from '../../domain/repositories/IExpenseRepository
  * yapılandırılmış Firebase projeleri için en doğru ve performanslı yöntemdir.
  */
 export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
+  async updateExpense(expense: Expense): Promise<void> {
+    try {
+      const { id, ...dataToUpdate } = expense;
+      const expenseDocRef = this.expensesCollection.doc(id);
+      await expenseDocRef.update(dataToUpdate);
+    } catch (error) {
+      console.error("Firestore'da masraf güncellenirken hata oluştu: ", error);
+      throw new Error('Masraf güncellenemedi.');
+    }
+  }
   async deleteExpense(expenseId: string): Promise<void> {
     try {
       // Silme işlemi, native SDK'nın kendi metot zinciriyle yapılır.
@@ -68,7 +78,6 @@ export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
             description: data.description,
             // @react-native-firebase/firestore'dan gelen Timestamp nesnesini Date'e çeviriyoruz.
             date: (data.date as FirebaseFirestoreTypes.Timestamp).toDate(),
-            receiptImageUrl: data.receiptImageUrl,
           };
         } catch (error) {
           console.error("Error mapping document data:", doc.id, error);
