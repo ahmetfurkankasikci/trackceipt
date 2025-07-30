@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
         color: '#4338ca',
         fontWeight: '500',
     },
-    fab: { position: 'absolute', width: 60, height: 60, borderRadius: 30, backgroundColor: '#007bff', justifyContent: 'center', alignItems: 'center', right: 20, bottom: 20, elevation: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84 },
+    fab: { position: 'absolute', width: 60, height: 60, borderRadius: 30, backgroundColor: '#007bff', justifyContent: 'center', alignItems: 'center', right: 20, bottom: 50, elevation: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84 },
     fabIcon: { fontSize: 30, color: '#fff' },
     rowBack: {
         alignItems: 'center',

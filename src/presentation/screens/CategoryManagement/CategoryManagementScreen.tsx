@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TextInput, Button, StyleSheet, TouchableOpacity, Alert, Modal } from 'react-native';
+import { View, Text, FlatList, TextInput, Button, StyleSheet, TouchableOpacity, Alert, Modal, SafeAreaView } from 'react-native';
 import ColorPicker from 'react-native-wheel-color-picker';
 import { useCategoryManagementViewModel } from './useCategoryManagementViewModel';
 import Category from '../../../domain/models/Category';
@@ -13,7 +13,7 @@ const CategoryManagementScreen: React.FC = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <FlatList
                 data={categories}
                 keyExtractor={(item) => item.id ?? ""}
@@ -27,7 +27,12 @@ const CategoryManagementScreen: React.FC = () => {
                     </TouchableOpacity>
                 )}
             />
-            <Button title="Yeni Kategori Ekle" onPress={openToAdd} />
+            <TouchableOpacity
+                style={styles.fab}
+                onPress={openToAdd}
+            >
+                <Text style={styles.fabIcon}>+</Text>
+            </TouchableOpacity>
 
             <Modal visible={isModalVisible} animationType="slide" transparent={true}>
                 <View style={styles.modalContainer}>
@@ -51,7 +56,7 @@ const CategoryManagementScreen: React.FC = () => {
                     </View>
                 </View>
             </Modal>
-        </View>
+        </SafeAreaView>
     );
 };
 // ... CategoryManagementScreen için stiller ...
@@ -111,7 +116,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginTop: 16,
     },
-    colorPicker: { height: 300, width: '100%' }
+    colorPicker: { height: 300, width: '100%' },
+    fab: { position: 'absolute', width: 60, height: 60, borderRadius: 30, backgroundColor: '#007bff', justifyContent: 'center', alignItems: 'center', right: 20, bottom: 50, elevation: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84 },
+    fabIcon: { fontSize: 30, color: '#fff' },
 
 
 
