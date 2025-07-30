@@ -18,6 +18,9 @@ import { LoginUseCase } from '../../domain/usecases/LoginUseCase';
 import { SignUpUseCase } from '../../domain/usecases/SignUpUseCase';
 import { DeleteExpenseUseCase } from '../../domain/usecases/DeleteExpenseUseCase';
 import { UpdateExpenseUseCase } from '../../domain/usecases/UpdateExpenseUseCase';
+import { AddCategoryUseCase, DeleteCategoryUseCase, GetAllCategoriesUseCase, UpdateCategoryUseCase } from '../../domain/usecases/CategoryUseCases';
+import { ICategoryRepository } from '../../domain/repositories/ICategoryRepository';
+import { FirestoreCategoryRepositoryImpl } from '../../data/repositories/FirestoreCategoryRepositoryImpl';
 
 // --- Bağımlılıkların Kaydedilmesi (Dependency Registration) ---
 
@@ -47,7 +50,7 @@ container.register(GetExpensesUseCase, {
   useFactory: (c) => new GetExpensesUseCase(c.resolve('IExpenseRepository'))
 });
 container.registerSingleton<IAuthRepository>('IAuthRepository', FirebaseAuthRepositoryImpl);
-
+container.registerSingleton<ICategoryRepository>('ICategoryRepository', FirestoreCategoryRepositoryImpl);
 
 container.register(SignUpUseCase, {
   useFactory: (c) => new SignUpUseCase(c.resolve('IAuthRepository'))
@@ -68,6 +71,20 @@ container.register(UpdateExpenseUseCase, {
   useFactory: (c) => new UpdateExpenseUseCase(c.resolve('IExpenseRepository'))
 });
 
+container.register(GetAllCategoriesUseCase, {
+  useFactory: (c) => new GetAllCategoriesUseCase(c.resolve('ICategoryRepository'))
+});
 
+container.register(AddCategoryUseCase, {
+  useFactory: (c) => new AddCategoryUseCase(c.resolve('ICategoryRepository'))
+});
+
+container.register(UpdateCategoryUseCase, {
+  useFactory: (c) => new UpdateCategoryUseCase(c.resolve('ICategoryRepository'))
+});
+
+container.register(DeleteCategoryUseCase, {
+  useFactory: (c) => new DeleteCategoryUseCase(c.resolve('ICategoryRepository'))
+});
 
 export default container;

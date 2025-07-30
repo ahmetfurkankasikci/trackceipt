@@ -7,6 +7,8 @@ import type Expense from '../../../domain/models/Expense';
 import { useSelector } from 'react-redux';
 import { DeleteExpenseUseCase } from '../../../domain/usecases/DeleteExpenseUseCase';
 import { AppRootState } from '../../../core/redux/store';
+import Category from '../../../domain/models/Category';
+import { GetAllCategoriesUseCase } from '../../../domain/usecases/CategoryUseCases';
 
 export const useHomeViewModel = () => {
   // UseCase'i dosya import edilirken değil, hook çalıştırıldığında istiyoruz.
@@ -18,21 +20,41 @@ export const useHomeViewModel = () => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [categories, setCategories] = useState<Category[]>([]);
+  const getAllCategoriesUseCase = useMemo(() => container.resolve(GetAllCategoriesUseCase), []);
+
   const deleteExpenseUseCase = useMemo(() => container.resolve(DeleteExpenseUseCase), []);
+
   useEffect(() => {
-    // Eğer kullanıcı giriş yapmışsa, onun masraflarını dinlemeye başla.
     if (user) {
-      const unsubscribe = getExpensesUseCase.execute(user.uid, (updatedExpenses) => {
+      const unsubscribeExpenses = getExpensesUseCase.execute(user.uid, (updatedExpenses) => {
+        console.log("Masraflar güncellendi:", updatedExpenses);
         setExpenses(updatedExpenses);
         if (isLoading) setIsLoading(false);
       });
-      return () => unsubscribe();
+      const unsubscribeCategories = getAllCategoriesUseCase.execute(user.uid, setCategories);
+
+      return () => {
+        unsubscribeExpenses();
+        unsubscribeCategories();
+      };
     } else {
-      // Kullanıcı giriş yapmamışsa veya çıkış yapmışsa, listeyi boşalt.
       setExpenses([]);
+      setCategories([]);
       setIsLoading(false);
     }
-  }, [user, getExpensesUseCase, isLoading]);
+  }, [user, getExpensesUseCase, getAllCategoriesUseCase, isLoading]);
+
+  const categoriesMap = useMemo(() =>
+    categories.reduce((map, cat) => {
+
+      map[cat.id ?? ""] = cat;
+
+      return map;
+    }, {} as { [key: string]: Category }),
+    [categories]
+  );
+
   // Yeni silme fonksiyonu
   const handleDeleteExpense = async (expenseId: string) => {
     setDeletingId(expenseId); // Silme indicator'ını başlat
@@ -51,5 +73,6 @@ export const useHomeViewModel = () => {
     isLoading,
     deletingId,
     handleDeleteExpense,
+    categoriesMap
   };
 };

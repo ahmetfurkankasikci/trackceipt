@@ -12,6 +12,8 @@ export type RootStackParamList = {
   Login: undefined;
   SignUp: undefined;
   Profile: undefined;
+  CategoryManagement: undefined;
+  Budget: undefined;
   ExpenseDetail: { expense: Expense };
 };
 

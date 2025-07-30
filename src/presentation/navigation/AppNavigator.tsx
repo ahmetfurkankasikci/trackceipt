@@ -20,6 +20,7 @@ import { OnAuthStateChangedUseCase } from '../../domain/usecases/OnAuthStateChan
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
 import ExpenseDetailScreen from '../screens/ExpenseDetail/ExpenseDetailScreen';
+import CategoryManagementScreen from '../screens/CategoryManagement/CategoryManagementScreen';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 // --- Navigasyon Yığınları (Stacks) ---
 
@@ -41,6 +42,7 @@ const MainStack = () => (
     <Stack.Screen name="Scan" component={ScanScreen} options={{ title: 'Fiş Tara', presentation: 'modal' }} />
     <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: 'Profil' }} />
     <Stack.Screen name="ExpenseDetail" component={ExpenseDetailScreen} options={{ title: 'Masraf Detayı' }} />
+    <Stack.Screen name="CategoryManagement" component={CategoryManagementScreen} options={{ title: 'Kategorileri Yönet' }} />
   </Stack.Navigator>
 );
 

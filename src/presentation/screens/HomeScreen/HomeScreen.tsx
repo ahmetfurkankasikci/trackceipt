@@ -11,7 +11,7 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 const HomeScreen: FC = () => {
     // Artık 'new' ile manuel oluşturma yok!
     // Tüm mantık ve state, ViewModel hook'unun içinde saklı.
-    const { expenses, isLoading, handleDeleteExpense } = useHomeViewModel();
+    const { expenses, isLoading, handleDeleteExpense, categoriesMap } = useHomeViewModel();
     const navigation = useNavigation<AppNavigationProp>();
     const route = useRoute<HomeScreenRouteProp>();
     const [isSyncing, setIsSyncing] = useState(false);
@@ -44,17 +44,25 @@ const HomeScreen: FC = () => {
             ]
         );
     };
-    const renderExpenseItem = ({ item }: { item: Expense }) => (
-        <TouchableHighlight onPress={() => navigation.navigate('ExpenseDetail', { expense: item })}  style={styles.rowFront} underlayColor={'#eee'}>
-            <View style={styles.itemContainer}>
-                <View>
-                    <Text style={styles.itemDescription}>{item.description || 'Açıklama Yok'}</Text>
-                    <Text style={styles.itemCategory}>{item.category}</Text>
+    const renderExpenseItem = ({ item }: { item: Expense }) => {
+
+        const category = item.categoryId ? categoriesMap[item.categoryId] : null;
+        console.log(item.categoryId);
+        return (
+            <TouchableHighlight style={styles.rowFront} underlayColor={'#eee'} onPress={() => navigation.navigate('ExpenseDetail', { expense: item })}>
+                <View style={styles.itemContainer}>
+                    <View style={styles.containerView}>
+                        <View style={[styles.categoryColorDot, { backgroundColor: category?.color || '#ccc' }]} />
+                        <View>
+                            <Text style={styles.itemDescription}>{item.description || 'Açıklama Yok'}</Text>
+                            <Text style={styles.itemCategory}>{category?.name || 'Kategorisiz'}</Text>
+                        </View>
+                    </View>
+                    <Text style={styles.itemAmount}>{item.amount.toFixed(2)} TL</Text>
                 </View>
-                <Text style={styles.itemAmount}>{item.amount.toFixed(2)} TL</Text>
-            </View>
-        </TouchableHighlight>
-    );
+            </TouchableHighlight>
+        );
+    };
 
     // Kaydırınca arkada çıkan öğe
     const renderHiddenItem = (data: { item: Expense }) => (
@@ -162,5 +170,12 @@ const styles = StyleSheet.create({
     backTextWhite: {
         color: '#FFF',
     },
+    categoryColorDot: {
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        marginRight: 8,
+    },
+    containerView: { flexDirection: 'row', alignItems: 'center' },
 });
 export default HomeScreen;

@@ -48,8 +48,7 @@ export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
     // Sorguyu oluşturma şekli web SDK'sından biraz farklıdır.
     // Direkt koleksiyon referansı üzerinden .orderBy() çağrılır.
     const query = this.expensesCollection.where("userId", "==", userId);
-    console.log("query")
-    console.log(query);
+
     // onSnapshot metodu direkt sorgu üzerinden çağrılır.
     const unsubscribe = query.onSnapshot((querySnapshot) => {
       // Hata kontrolü eklemek iyi bir pratiktir.
@@ -75,6 +74,7 @@ export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
             userId: data.userId,
             amount: data.amount,
             category: data.category,
+            categoryId: data.categoryId,
             description: data.description,
             // @react-native-firebase/firestore'dan gelen Timestamp nesnesini Date'e çeviriyoruz.
             date: (data.date as FirebaseFirestoreTypes.Timestamp).toDate(),
