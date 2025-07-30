@@ -81,7 +81,7 @@ Bu projenin çalışabilmesi için bir Firebase projesine bağlanması gerekmekt
 
     service cloud.firestore {
       match /databases/{database}/documents {
-        // "expenses" koleksiyonundaki tüm belgelere erişim kurallarını tanımla
+
         match /expenses/{expenseId} {
       
           allow read, update, delete: if request.auth.uid == resource.data.userId;
