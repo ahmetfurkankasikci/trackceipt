@@ -1,7 +1,7 @@
 import { PermissionsAndroid, Platform } from 'react-native';
 import { useEffect } from 'react';
 import AppNavigator from './src/presentation/navigation/AppNavigator';
-import 'reflect-metadata'; // <-- BU İLK IMPORT OLMALI
+import 'reflect-metadata';
 import './src/core/di/container';
 import { Provider } from 'react-redux';
 import { store } from './src/core/redux/store';
@@ -18,12 +18,9 @@ function App() {
             PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
           ]);
 
-          console.log('İzin sonuçları:', granted);
-
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const cameraGranted = granted['android.permission.CAMERA'] === PermissionsAndroid.RESULTS.GRANTED;
-          if (cameraGranted) {
-            console.log('Kamera izni verildi');
-          }
+          
         } catch (err) {
           console.warn(err);
         }

@@ -33,7 +33,7 @@ export const useCategoryManagementViewModel = () => {
     const openToAdd = () => {
         setEditingCategory(null);
         setName('');
-        setColor('#A020F0'); // Varsayılan renk
+        setColor('#A020F0');
         setModalVisible(true);
     };
     const openToEdit = (category: Category) => {

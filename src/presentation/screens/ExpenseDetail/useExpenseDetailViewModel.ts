@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { container } from 'tsyringe';
 import { UpdateExpenseUseCase } from '../../../domain/usecases/UpdateExpenseUseCase';
-import type { ExpenseDetailScreenRouteProp, AppNavigationProp } from '../../navigation/types'; // Yeni tip
+import type { ExpenseDetailScreenRouteProp, AppNavigationProp } from '../../navigation/types';
 import { Alert } from 'react-native';
 import { GetAllCategoriesUseCase } from '../../../domain/usecases/CategoryUseCases';
 import Category from '../../../domain/models/Category';
@@ -21,7 +21,7 @@ export const useExpenseDetailViewModel = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
 
-    // Düzenleme modu ve form state'leri
+    
     const [isEditing, setIsEditing] = useState(false);
     const [description, setDescription] = useState(initialExpense.description ?? "");
     const [amount, setAmount] = useState(initialExpense.amount.toString());
@@ -32,7 +32,7 @@ export const useExpenseDetailViewModel = () => {
 
     useEffect(() => {
         if (!user) return;
-        // YENİ EKLENEN KISIM: Kategorileri dinlemeye başlıyoruz.
+
         const unsubscribe = getAllCategoriesUseCase.execute(user.uid, setCategories);
         return unsubscribe;
     }, [user, getAllCategoriesUseCase]);
@@ -53,13 +53,13 @@ export const useExpenseDetailViewModel = () => {
                 date,
             };
             await updateExpenseUseCase.execute(updatedExpense);
-            setIsEditing(false); // Düzenleme modunu kapat
+            setIsEditing(false); 
             navigation.navigate('Home', { newExpenseAdded: true });
         } catch (error) {
             console.error("Güncelleme hatası:", error);
             Alert.alert('Güncelleme Başarısız', 'Masraf güncellenirken bir sorun oluştu. Lütfen tekrar deneyin.');
 
-            // Hata uyarısı gösterilebilir.
+           
         } finally {
             setIsLoading(false);
         }

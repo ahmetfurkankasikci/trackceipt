@@ -1,14 +1,12 @@
-// src/presentation/screens/ScanScreen/ScanScreen.tsx
-
 import { FC, useState } from 'react';
 import { View, Text, Button, Image, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import {
   launchCamera,
   launchImageLibrary,
   Asset,
-  ImagePickerResponse, // Gelişmiş tip güvenliği için import edildi
+  ImagePickerResponse, 
 } from 'react-native-image-picker';
-import { useScanViewModel } from './useScanViewModel'; // ViewModel'i import et
+import { useScanViewModel } from './useScanViewModel'; 
 import { useNavigation } from '@react-navigation/native';
 import { AppNavigationProp } from '../../navigation/types';
 
@@ -16,15 +14,13 @@ const ScanScreen: FC = () => {
   const navigation = useNavigation<AppNavigationProp>();
   const [selectedImage, setSelectedImage] = useState<Asset | null>(null);
 
-  // ViewModel'den state ve fonksiyonları al
   const { isLoading, error, analyzeReceipt } = useScanViewModel();
 
-  // Gelen yanıt için doğru tipi kullanarak fonksiyonu daha güvenli hale getirdik.
   const handleImageSelection = (response: ImagePickerResponse) => {
     if (response.didCancel) {
-      console.log('Kullanıcı işlemi iptal etti.');
+
     } else if (response.errorCode) {
-      console.log('Image Picker Hatası: ', response.errorMessage);
+
       Alert.alert('Hata', 'Resim seçilirken bir sorun oluştu.');
     } else if (response.assets && response.assets.length > 0) {
       setSelectedImage(response.assets[0]);
@@ -43,12 +39,10 @@ const ScanScreen: FC = () => {
     if (selectedImage?.base64) {
       const success = await analyzeReceipt(selectedImage.base64);
       if (success) {
-        setSelectedImage(null); // İşlem sonrası resmi temizle
+        setSelectedImage(null); 
         navigation.navigate('Home', { newExpenseAdded: true });
         navigation.goBack()
       } else {
-        // Hata durumu için kullanıcıya anlık bir uyarı gösteriyoruz.
-        // Detaylı hata mesajı zaten ekranda 'error' state'i ile gösteriliyor.
         Alert.alert('İşlem Başarısız', 'Fiş analiz edilemedi. Lütfen hata mesajını kontrol edin veya tekrar deneyin.');
       }
     } else {
@@ -68,7 +62,6 @@ const ScanScreen: FC = () => {
         )}
       </View>
 
-      {/* Yüklenme durumunda ActivityIndicator göster */}
       {isLoading && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#0000ff" />
@@ -76,7 +69,6 @@ const ScanScreen: FC = () => {
         </View>
       )}
 
-      {/* Hata durumunda hata mesajını göster */}
       {error && !isLoading && (
         <Text style={styles.errorText}>Hata: {error}</Text>
       )}

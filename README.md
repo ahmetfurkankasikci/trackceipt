@@ -1,97 +1,130 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Trackceipt - Akıllı Fiş ve Masraf Takip Uygulaması
 
-# Getting Started
+**Trackceipt**, günlük harcamalarınızı kolayca yönetmenizi sağlayan modern bir mobil uygulamadır. Geleneksel fiş okuyucuların ötesine geçerek, Google'ın güçlü Gemini yapay zeka API'si ile fişlerinizi analiz eder, masraflarınızı otomatik olarak anlar ve sizin için kaydeder. Clean Architecture ve en güncel mobil geliştirme prensipleriyle inşa edilmiştir.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+---
 
-## Step 1: Start Metro
+## ✨ Özellikler
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+- **Yapay Zeka Destekli Fiş Tarama:** Kameranızla veya galerinizden seçtiğiniz bir fiş fotoğrafını analiz ederek toplam tutar, mağaza adı ve tarihi otomatik olarak ayıklar.
+- **Kullanıcı Kimlik Doğrulama:** Firebase Authentication ile güvenli bir şekilde kayıt olun ve giriş yapın. Her kullanıcı sadece kendi verilerine erişebilir.
+- **Gerçek Zamanlı Veritabanı:** Tüm masraf, kategori ve bütçe verileri Firestore üzerinde gerçek zamanlı olarak saklanır ve anında senkronize olur.
+- **Masraf Yönetimi:**
+    - Masrafları listeleme, detaylarını görme.
+    - Masrafları düzenleme ve kaydetme.
+    - Sola kaydırarak masrafları kolayca silme.
+- **Kişiselleştirilebilir Kategoriler:**
+    - Kendi harcama kategorilerinizi (Giyim, Fatura, Eğlence vb.) oluşturun.
+    - Her kategoriye şık bir renk paletinden dilediğiniz rengi atayın.
+    - Kategorileri düzenleyin ve silin.
+- **Profil Yönetimi:** Kullanıcı bilgilerinizi görüntüleyin ve güvenli bir şekilde çıkış yapın.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+---
 
-```sh
-# Using npm
-npm start
+## 🛠️ Kullanılan Teknolojiler
 
-# OR using Yarn
-yarn start
-```
+Bu proje, ölçeklenebilir ve bakımı kolay bir uygulama oluşturmak için modern teknolojiler ve en iyi pratikler kullanılarak geliştirilmiştir.
 
-## Step 2: Build and run your app
+- **Platform:** React Native
+- **Mimari:** Clean Architecture
+- **Durum Yönetimi (State Management):** Redux Toolkit
+- **Bağımlılık Enjeksiyonu (Dependency Injection):** Tsyringe
+- **Backend Servisleri (BaaS):**
+    - **Firebase Authentication:** Kullanıcı girişi ve güvenliği.
+    - **Firestore:** Gerçek zamanlı NoSQL veritabanı.
+- **Yapay Zeka:** Google Gemini 1.5 Flash API (Fiş analizi için)
+- **Navigasyon:** React Navigation
+- **UI Kütüphaneleri:**
+    - `react-native-swipe-list-view` (Kaydırarak silme)
+    - `react-native-wheel-color-picker` (Kategori rengi seçimi)
+    - `react-native-date-picker` (Tarih düzenleme)
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+---
 
-### Android
+## 🚀 Başlarken
 
-```sh
-# Using npm
-npm run android
+Projeyi yerel makinenizde çalıştırmak için aşağıdaki adımları izleyin.
 
-# OR using Yarn
-yarn android
-```
+### Ön Gereksinimler
 
-### iOS
+- Node.js (LTS versiyonu önerilir)
+- JDK (Java Development Kit)
+- Android Studio ve Android SDK
+- React Native CLI
+- Bir fiziksel cihaz veya emulator
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+### Kurulum
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+1.  **Projeyi Klonlayın:**
+    ```bash
+    git clone [https://github.com/kullanici-adiniz/proje-adiniz.git](https://github.com/kullanici-adiniz/proje-adiniz.git)
+    cd proje-adiniz
+    ```
 
-```sh
-bundle install
-```
+2.  **Bağımlılıkları Yükleyin:**
+    ```bash
+    npm install
+    ```
 
-Then, and every time you update your native dependencies, run:
+### Firebase Kurulumu
 
-```sh
-bundle exec pod install
-```
+Bu projenin çalışabilmesi için bir Firebase projesine bağlanması gerekmektedir.
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+1.  [Firebase Konsolu](https://console.firebase.google.com/)'na gidin ve yeni bir proje oluşturun.
+2.  Projenize bir **Android** uygulaması ekleyin. `com.trackceipt` paket adını kullanabilirsiniz.
+3.  Kurulum adımlarını takip ederek `google-services.json` dosyasını indirin ve projenizin `android/app/` dizinine yerleştirin.
+4.  Firebase projenizin **Authentication** bölümüne gidin ve "E-posta/Parola" ile girişi etkinleştirin.
+5.  Firebase projenizin **Firestore Database** bölümüne gidin ve test modunda bir veritabanı oluşturun.
+6.  Firestore **Kurallar (Rules)** sekmesini aşağıdaki gibi güncelleyin:
+    ```
+    rules_version = '2';
 
-```sh
-# Using npm
-npm run ios
+    service cloud.firestore {
+      match /databases/{database}/documents {
+        // "expenses" koleksiyonundaki tüm belgelere erişim kurallarını tanımla
+        match /expenses/{expenseId} {
+      
+          allow read, update, delete: if request.auth.uid == resource.data.userId;
+      
+          allow create: if request.auth.uid == request.resource.data.userId;
+        }
+        match /categories/{categoryId} {
+    
+          allow read, update, delete: if request.auth.uid == resource.data.userId;
+      
+          allow create: if request.auth.uid == request.resource.data.userId;
+      
+      }
+    
+      }
+    }
+    ```
 
-# OR using Yarn
-yarn ios
-```
+### Gemini API Kurulumu
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+1.  [Google AI Studio](https://aistudio.google.com/)'ya gidin ve bir API anahtarı oluşturun.
+2.  Projenizin kök dizininde `.env` adında bir dosya oluşturun.
+3.  Oluşturduğunuz API anahtarını bu dosyanın içine aşağıdaki gibi ekleyin:
+    ```
+    GEMINI_API_KEY=BURAYA_API_ANAHTARINIZI_YAPISTIRIN
+    ```
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+### Uygulamayı Çalıştırma
 
-## Step 3: Modify your app
+1.  **Metro Sunucusunu Başlatın:**
+    ```bash
+    npm start -- --reset-cache
+    ```
 
-Now that you have successfully run the app, let's make changes!
+2.  **Uygulamayı Android Cihazında Çalıştırın:** (Yeni bir terminalde)
+    ```bash
+    npx react-native run-android
+    ```
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+---
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+## 🖼️ Ekran Görüntüleri
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+| Giriş Ekranı | Ana Ekran | Fiş Tarama | Kategori Yönetimi |
+| :---: | :---: | :---: | :---: |
+| ![Giriş Ekranı](.github/screenshots/Screenshot_4.png) | ![Ana Ekran](.github/screenshots/Screenshot_2.png) | ![Fiş Tarama](.github/screenshots/Screenshot_3.png) | ![Kategori Yönetimi](.github/screenshots/Screenshot_1.png) |

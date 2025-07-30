@@ -1,40 +1,31 @@
-// src/presentation/screens/HomeScreen/HomeScreen.tsx
-
 import { FC, useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, Alert, TouchableHighlight } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { AppNavigationProp, HomeScreenRouteProp } from '../../navigation/types';
-import { useHomeViewModel } from './useHomeViewModel'; // Sadece ViewModel hook'unu import ediyoruz.
+import { useHomeViewModel } from './useHomeViewModel';
 import Expense from '../../../domain/models/Expense';
 import { SwipeListView } from 'react-native-swipe-list-view';
 
 const HomeScreen: FC = () => {
-    // Artık 'new' ile manuel oluşturma yok!
-    // Tüm mantık ve state, ViewModel hook'unun içinde saklı.
     const { expenses, isLoading, handleDeleteExpense, categoriesMap } = useHomeViewModel();
     const navigation = useNavigation<AppNavigationProp>();
     const route = useRoute<HomeScreenRouteProp>();
     const [isSyncing, setIsSyncing] = useState(false);
     useEffect(() => {
-        // ScanScreen'den yeni bir masraf eklendi parametresiyle dönüldüyse,
-        // senkronizasyon indicator'ını başlat.
+      
         if (route.params?.newExpenseAdded) {
             setIsSyncing(true);
-            // Parametreyi "kullandıktan" sonra temizle.
             navigation.setParams({ newExpenseAdded: false });
         }
     }, [route.params?.newExpenseAdded, navigation])
 
     useEffect(() => {
-        // Eğer senkronizasyon bekleniyorsa ve masraf listesi güncellendiyse
-        // (yani yeni veri Firestore'dan geldiyse), indicator'ı kapat.
         if (isSyncing && !isLoading) {
             setIsSyncing(false);
         }
     }, [expenses, isSyncing, isLoading]);
 
     const confirmDelete = (item: Expense) => {
-        console.log(item);
         Alert.alert(
             "Masrafı Sil",
             `"${item.description}" adlı masrafı silmek istediğinizden emin misiniz?`,
@@ -47,7 +38,7 @@ const HomeScreen: FC = () => {
     const renderExpenseItem = ({ item }: { item: Expense }) => {
 
         const category = item.categoryId ? categoriesMap[item.categoryId] : null;
-        console.log(item.categoryId);
+
         return (
             <TouchableHighlight style={styles.rowFront} underlayColor={'#eee'} onPress={() => navigation.navigate('ExpenseDetail', { expense: item })}>
                 <View style={styles.itemContainer}>
@@ -64,7 +55,6 @@ const HomeScreen: FC = () => {
         );
     };
 
-    // Kaydırınca arkada çıkan öğe
     const renderHiddenItem = (data: { item: Expense }) => (
         <View style={styles.rowBack}>
             <TouchableOpacity
@@ -91,7 +81,7 @@ const HomeScreen: FC = () => {
                 data={expenses}
                 renderItem={renderExpenseItem}
                 renderHiddenItem={renderHiddenItem}
-                rightOpenValue={-75} // Arkadaki butonun ne kadar görüneceği
+                rightOpenValue={-75} 
                 previewRowKey={'0'}
                 previewOpenValue={-40}
                 previewOpenDelay={3000}

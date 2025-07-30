@@ -18,7 +18,6 @@ export const useAuthViewModel = () => {
         dispatch(setAuthLoading(true));
         try {
             await loginUseCase.execute(email, password);
-            // Başarılı giriş sonrası Redux store onAuthStateChanged tarafından güncellenecek.
         } catch (error: any) {
             dispatch(setAuthError(error.message));
         }
@@ -28,7 +27,6 @@ export const useAuthViewModel = () => {
         dispatch(setAuthLoading(true));
         try {
             await signUpUseCase.execute(email, password);
-            // Başarılı kayıt sonrası Redux store onAuthStateChanged tarafından güncellenecek.
         } catch (error: any) {
             dispatch(setAuthError(error.message));
         }

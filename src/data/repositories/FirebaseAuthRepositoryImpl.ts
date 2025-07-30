@@ -27,7 +27,6 @@ export class FirebaseAuthRepositoryImpl implements IAuthRepository {
                 email: firebaseUser.email,
             };
         } catch (error: any) {
-            // Hata kodlarına göre kullanıcıya daha anlaşılır mesajlar verilebilir.
             console.error("SignUp Error:", error.code, error.message);
             throw new Error('Kayıt işlemi başarısız oldu.');
         }
@@ -44,7 +43,6 @@ export class FirebaseAuthRepositoryImpl implements IAuthRepository {
     onAuthStateChanged(callback: (user: User | null) => void): () => void {
         const unsubscribe = auth().onAuthStateChanged((firebaseUser: FirebaseAuthTypes.User | null) => {
             if (firebaseUser) {
-                // Firebase'den gelen kullanıcı nesnesini, kendi Domain modelimize dönüştürüyoruz.
                 const appUser: User = {
                     uid: firebaseUser.uid,
                     email: firebaseUser.email,

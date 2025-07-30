@@ -13,9 +13,17 @@ export class FirestoreCategoryRepositoryImpl implements ICategoryRepository {
             onUpdate(categories);
         })
     }
-    async addCategory(category: Category): Promise<string> {
-        const docRef = await this.collection.add(category);
-        return docRef.id;
+    async addCategory(category: Category): Promise<void> {
+        try {
+            console.log(this.collection)
+            console.log(category);
+            await this.collection.add(category);
+        } catch (error) {
+            console.error("Firestore'a kategori eklenirken hata oluştu: ", error);
+            throw new Error('Kategori eklenemedi.');
+        }
+
+
     }
     async updateCategory(category: Category): Promise<void> {
         const { id, ...data } = category;

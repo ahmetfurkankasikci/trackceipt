@@ -69,5 +69,4 @@ const styles = StyleSheet.create({
   },
 });
 
-// SignUpScreen'i de dışa aktarmayı unutmayın.
 export default SignUpScreen ;

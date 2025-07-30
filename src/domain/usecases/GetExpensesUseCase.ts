@@ -1,4 +1,3 @@
-// src/domain/usecases/GetExpensesUseCase.ts
 import { injectable, inject } from 'tsyringe';
 import type { IExpenseRepository } from '../repositories/IExpenseRepository';
 import Expense from '../models/Expense';
@@ -9,11 +8,7 @@ export class GetExpensesUseCase {
     @inject('IExpenseRepository') private readonly expenseRepository: IExpenseRepository,
   ) {}
 
-  /**
-   * Masrafları dinlemeye başlar ve her güncellemede callback'i tetikler.
-   * @param onUpdate Güncel masraf listesini alan fonksiyon.
-   * @returns Dinlemeyi durdurmak için bir unsubscribe fonksiyonu.
-   */
+
   execute(userId: string, onUpdate: (expenses: Expense[]) => void): () => void {
     return this.expenseRepository.getAllExpenses(userId,onUpdate);
   }

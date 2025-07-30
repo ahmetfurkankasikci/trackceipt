@@ -7,9 +7,7 @@ export class LogoutUseCase {
     @inject('IAuthRepository') private readonly authRepository: IAuthRepository,
   ) {}
 
-  /**
-   * Aktif kullanıcının oturumunu kapatmak için çağrılır.
-   */
+
   execute(): Promise<void> {
     return this.authRepository.logout();
   }

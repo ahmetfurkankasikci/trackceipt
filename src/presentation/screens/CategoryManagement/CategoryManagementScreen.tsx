@@ -59,7 +59,7 @@ const CategoryManagementScreen: React.FC = () => {
         </SafeAreaView>
     );
 };
-// ... CategoryManagementScreen için stiller ...
+
 export default CategoryManagementScreen;
 const styles = StyleSheet.create({
     container: {
