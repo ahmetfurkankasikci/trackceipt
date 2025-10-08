@@ -1,18 +1,21 @@
 import { FC, useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, Alert, TouchableHighlight } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, ScrollView, TextInput, Pressable } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { AppNavigationProp, HomeScreenRouteProp } from '../../navigation/types';
 import { useHomeViewModel } from './useHomeViewModel';
 import Expense from '../../../domain/models/Expense';
 import { SwipeListView } from 'react-native-swipe-list-view';
+import ExpenseListItem from '../../components/ExpenseListItem';
 
 const HomeScreen: FC = () => {
-    const { expenses, isLoading, handleDeleteExpense, categoriesMap } = useHomeViewModel();
+    const { expenses, isLoading, categoriesMap } = useHomeViewModel();
     const navigation = useNavigation<AppNavigationProp>();
     const route = useRoute<HomeScreenRouteProp>();
     const [isSyncing, setIsSyncing] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(0);
+
     useEffect(() => {
-      
+
         if (route.params?.newExpenseAdded) {
             setIsSyncing(true);
             navigation.setParams({ newExpenseAdded: false });
@@ -24,8 +27,10 @@ const HomeScreen: FC = () => {
             setIsSyncing(false);
         }
     }, [expenses, isSyncing, isLoading]);
-
-    const confirmDelete = (item: Expense) => {
+    const handlePress = (index: number) => {
+        setSelectedIndex(index);
+    }
+    /*const confirmDelete = (item: Expense) => {
         Alert.alert(
             "Masrafı Sil",
             `"${item.description}" adlı masrafı silmek istediğinizden emin misiniz?`,
@@ -34,37 +39,17 @@ const HomeScreen: FC = () => {
                 { text: "Sil", onPress: () => handleDeleteExpense(item.id ?? ""), style: "destructive" },
             ]
         );
-    };
+    };*/
     const renderExpenseItem = ({ item }: { item: Expense }) => {
 
         const category = item.categoryId ? categoriesMap[item.categoryId] : null;
-
+        const navigateExpense = () => navigation.navigate('ExpenseDetail', { expense: item });
         return (
-            <TouchableHighlight style={styles.rowFront} underlayColor={'#eee'} onPress={() => navigation.navigate('ExpenseDetail', { expense: item })}>
-                <View style={styles.itemContainer}>
-                    <View style={styles.containerView}>
-                        <View style={[styles.categoryColorDot, { backgroundColor: category?.color || '#ccc' }]} />
-                        <View>
-                            <Text style={styles.itemDescription}>{item.description || 'Açıklama Yok'}</Text>
-                            <Text style={styles.itemCategory}>{category?.name || 'Kategorisiz'}</Text>
-                        </View>
-                    </View>
-                    <Text style={styles.itemAmount}>{item.amount.toFixed(2)} TL</Text>
-                </View>
-            </TouchableHighlight>
+            <ExpenseListItem expense={item} category={category} onNavigate={navigateExpense} />
         );
     };
 
-    const renderHiddenItem = (data: { item: Expense }) => (
-        <View style={styles.rowBack}>
-            <TouchableOpacity
-                style={[styles.backRightBtn, styles.backRightBtnRight]}
-                onPress={() => confirmDelete(data.item)}
-            >
-                <Text style={styles.backTextWhite}>Sil</Text>
-            </TouchableOpacity>
-        </View>
-    );
+    
 
     if (isLoading) {
         return (
@@ -77,28 +62,51 @@ const HomeScreen: FC = () => {
 
     return (
         <View style={styles.container}>
+            <View style={styles.inputContainer}>
+                <TextInput placeholderTextColor={'#6B7280'} style={styles.searchInput} placeholder='Fişlerinizde ara' />
+            </View>
+            <ScrollView contentContainerStyle={styles.scrollViewContent} horizontal={true} showsHorizontalScrollIndicator={false}>
+
+                <Pressable onPress={() => handlePress(0)} style={[selectedIndex === 0 ? styles.pressedScrollButton : styles.scrollButton, styles.baseButton]}>
+
+                    <Text style={[selectedIndex === 0 ? styles.textWhite : styles.textBlack]}>Tümü</Text>
+
+                </Pressable>
+
+                <Pressable onPress={() => handlePress(1)} style={[selectedIndex === 1 ? styles.pressedScrollButton : styles.scrollButton, styles.baseButton]}>
+
+                    <Text style={[selectedIndex === 1 ? styles.textWhite : styles.textBlack]}>Yiyecek</Text>
+
+                </Pressable>
+
+                <Pressable onPress={() => handlePress(2)} style={[selectedIndex === 2 ? styles.pressedScrollButton : styles.scrollButton, styles.baseButton]}>
+
+                    <Text style={[selectedIndex === 2 ? styles.textWhite : styles.textBlack]}>Ulaşım</Text>
+
+                </Pressable>
+
+                <Pressable onPress={() => handlePress(3)} style={[selectedIndex === 3 ? styles.pressedScrollButton : styles.scrollButton, styles.baseButton]}>
+
+                    <Text style={[selectedIndex === 3 ? styles.textWhite : styles.textBlack]}>Eğlence</Text>
+
+                </Pressable>
+
+            </ScrollView>
             <SwipeListView
                 data={expenses}
                 renderItem={renderExpenseItem}
-                renderHiddenItem={renderHiddenItem}
-                rightOpenValue={-75} 
+                rightOpenValue={-75}
                 previewRowKey={'0'}
                 previewOpenValue={-40}
                 previewOpenDelay={3000}
                 keyExtractor={(item) => item.id ?? ""}
-                contentContainerStyle={expenses.length === 0 ? styles.flex : {}}
+                contentContainerStyle={expenses.length === 0 ? styles.flex : styles.contentContainer}
                 ListEmptyComponent={
                     <View style={styles.centerContainer}>
                         <Text style={styles.emptyText}>Henüz masraf eklenmemiş.</Text>
                     </View>
                 }
             />
-            <TouchableOpacity
-                style={styles.fab}
-                onPress={() => navigation.navigate('Scan')}
-            >
-                <Text style={styles.fabIcon}>+</Text>
-            </TouchableOpacity>
         </View>
     );
 };
@@ -107,18 +115,8 @@ const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#f8f9fa' },
     centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     loadingText: { marginTop: 10, fontSize: 16, color: '#6c757d' },
-    itemContainer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#e9ecef', backgroundColor: '#fff' },
-    itemDescription: { fontSize: 16, fontWeight: '500', color: '#212529' },
-    itemCategory: { fontSize: 14, color: '#6c757d', marginTop: 4 },
-    itemAmount: { fontSize: 16, fontWeight: 'bold', color: '#28a745' },
+
     emptyText: { fontSize: 18, color: '#6c757d' },
-    rowFront: {
-        backgroundColor: '#fff',
-        borderBottomColor: '#e9ecef',
-        borderBottomWidth: 1,
-        justifyContent: 'center',
-        minHeight: 50,
-    },
     syncingContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -126,46 +124,57 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: '#eef2ff',
     },
-    syncingText: {
-        marginLeft: 10,
-        fontSize: 14,
-        color: '#4338ca',
-        fontWeight: '500',
-    },
-    fab: { position: 'absolute', width: 60, height: 60, borderRadius: 30, backgroundColor: '#007bff', justifyContent: 'center', alignItems: 'center', right: 20, bottom: 50, elevation: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84 },
-    fabIcon: { fontSize: 30, color: '#fff' },
-    rowBack: {
-        alignItems: 'center',
-        backgroundColor: '#dc3545',
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingLeft: 15,
-    },
     flex: {
         flex: 1,
     },
-    backRightBtn: {
-        alignItems: 'center',
-        bottom: 0,
+    contentContainer: {
+        gap: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+    },
+    scrollViewContent: {
+        marginBottom:15,
+        height: 60,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        gap: 15,
+
+    },
+    baseButton: {
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        display: 'flex',
         justifyContent: 'center',
-        position: 'absolute',
-        top: 0,
-        width: 75,
+        alignItems: 'center',
+        textAlign: 'center',
+        borderRadius: 24,
+        elevation: 4,
     },
-    backRightBtnRight: {
-        backgroundColor: '#dc3545',
-        right: 0,
+    scrollButton: {
+        backgroundColor: 'white',
     },
-    backTextWhite: {
-        color: '#FFF',
+    pressedScrollButton: {
+        backgroundColor: '#137FEC',
     },
-    categoryColorDot: {
-        width: 10,
-        height: 10,
-        borderRadius: 5,
-        marginRight: 8,
+    textWhite: {
+        color: 'white',
     },
-    containerView: { flexDirection: 'row', alignItems: 'center' },
+    textBlack: {
+        color: 'black',
+    },
+    searchInput: {
+        backgroundColor: 'white',
+        borderWidth: 1,
+        borderColor: '#6B7280',
+        borderRadius: 24,
+        marginVertical: 10,
+        paddingHorizontal: 18,
+        height: 50,
+        elevation: 4,
+
+    },
+    inputContainer: {
+        paddingRight: 16,
+    }
 });
 export default HomeScreen;

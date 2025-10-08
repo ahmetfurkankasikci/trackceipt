@@ -1,34 +1,36 @@
-import { useMemo, useState } from 'react';
-import { AnalyzeAndAddExpenseUseCase } from '../../../domain/usecases/AnalyzeAndAddExpenseUseCase';
+import { useState, useMemo } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { container } from 'tsyringe';
-import { AppRootState } from '../../../core/redux/store';
-import { useSelector } from 'react-redux';
-
+import { AnalyzeReceiptUseCase } from '../../../domain/usecases/AnalyzeReceiptUseCase';
+import type { AppNavigationProp } from '../../navigation/types';
 
 export const useScanViewModel = () => {
+  const navigation = useNavigation<AppNavigationProp>();
+  const analyzeReceiptUseCase = useMemo(() => container.resolve(AnalyzeReceiptUseCase), []);
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const user = useSelector((state: AppRootState) => state.auth.user);
-  const analyzeAndAddExpenseUseCase = useMemo(() => container.resolve(AnalyzeAndAddExpenseUseCase), []);
-
-
- 
-  const analyzeReceipt = async (base64Image: string): Promise<boolean> => {
-    if (!user) {
-      setError('Bu işlemi yapmak için giriş yapmalısınız.');
-      return false;
-    }
+  const analyzeReceipt = async (base64Image: string, imageUri: string) => {
     setIsLoading(true);
     setError(null);
     try {
-      await analyzeAndAddExpenseUseCase.execute(base64Image, user.uid);
-      setIsLoading(false);
-      return true; 
-    } catch (e: any) {
-      setError(e.message || 'Bilinmeyen bir hata oluştu.');
-      setIsLoading(false);
+      const extractedData = await analyzeReceiptUseCase.execute(base64Image);
+      // Başarılı analizden sonra, artık aynı yığın (stack) içinde olan Onay Ekranı'na yönlendiriyoruz.
+      navigation.navigate('ScanStack', {
+        screen: 'ReceiptConfirmation', params: {
+          extractedData,
+          imageUri,
+          base64Image,
+        }
+      });
+      return true;
+    } catch (err: any) {
+      console.error('Fiş analiz edilirken hata oluştu:', err);
+      setError(err.message || 'Fiş analiz edilemedi.');
       return false;
+    } finally {
+      setIsLoading(false);
     }
   };
 

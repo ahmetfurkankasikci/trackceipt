@@ -7,7 +7,6 @@ import { IExpenseRepository } from '../../domain/repositories/IExpenseRepository
 import { FirestoreExpenseRepositoryImpl } from '../../data/repositories/FirestoreExpenseRepositoryImpl';
 import { AiVisionService } from '../../data/services/AiVisionService';
 import { GetExpensesUseCase } from '../../domain/usecases/GetExpensesUseCase';
-import { AnalyzeAndAddExpenseUseCase } from '../../domain/usecases/AnalyzeAndAddExpenseUseCase';
 import { IAuthRepository } from '../../domain/repositories/IAuthRepository';
 import { FirebaseAuthRepositoryImpl } from '../../data/repositories/FirebaseAuthRepositoryImpl';
 import { OnAuthStateChangedUseCase } from '../../domain/usecases/OnAuthStateChangedUseCase';
@@ -19,6 +18,8 @@ import { UpdateExpenseUseCase } from '../../domain/usecases/UpdateExpenseUseCase
 import { AddCategoryUseCase, DeleteCategoryUseCase, GetAllCategoriesUseCase, UpdateCategoryUseCase } from '../../domain/usecases/CategoryUseCases';
 import { ICategoryRepository } from '../../domain/repositories/ICategoryRepository';
 import { FirestoreCategoryRepositoryImpl } from '../../data/repositories/FirestoreCategoryRepositoryImpl';
+import { AnalyzeReceiptUseCase } from '../../domain/usecases/AnalyzeReceiptUseCase';
+import { AddExpenseUseCase } from '../../domain/usecases/AddExpenseUseCase';
 
 
 container.registerSingleton(AiVisionService);
@@ -28,12 +29,6 @@ container.registerSingleton<IExpenseRepository>('IExpenseRepository', FirestoreE
 container.register(DeleteExpenseUseCase, {
   useFactory: (c) => new DeleteExpenseUseCase(c.resolve('IExpenseRepository'))
 })
-container.register(AnalyzeAndAddExpenseUseCase, {
-  useFactory: (c) => new AnalyzeAndAddExpenseUseCase(
-    c.resolve(AiVisionService),
-    c.resolve('IExpenseRepository')
-  )
-});
 
 container.register(GetExpensesUseCase, {
   useFactory: (c) => new GetExpensesUseCase(c.resolve('IExpenseRepository'))
@@ -75,5 +70,11 @@ container.register(UpdateCategoryUseCase, {
 container.register(DeleteCategoryUseCase, {
   useFactory: (c) => new DeleteCategoryUseCase(c.resolve('ICategoryRepository'))
 });
+container.register(AnalyzeReceiptUseCase, {
+  useFactory: c => new AnalyzeReceiptUseCase(c.resolve(AiVisionService)),
+});
 
+container.register(AddExpenseUseCase, {
+  useFactory: c => new AddExpenseUseCase(c.resolve('IExpenseRepository')),
+});
 export default container;

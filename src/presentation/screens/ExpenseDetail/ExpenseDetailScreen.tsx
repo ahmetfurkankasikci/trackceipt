@@ -28,7 +28,7 @@ const ExpenseDetailScreen: FC = () => {
     return (
         <View style={styles.container}>
             {renderField("Açıklama", initialExpense.description ?? "", description ?? "", setDescription)}
-            {renderField("Tutar (TL)", initialExpense.amount.toFixed(2), amount, setAmount, 'numeric')}
+            {renderField("Tutar (TL)", initialExpense.amount ? initialExpense.amount.toFixed(2):"0", amount, setAmount, 'numeric')}
 
             <View style={styles.fieldContainer}>
                 <Text style={styles.label}>Kategori</Text>

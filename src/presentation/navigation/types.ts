@@ -1,11 +1,19 @@
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RouteProp } from '@react-navigation/native'; 
+import type { NavigatorScreenParams, RouteProp } from '@react-navigation/native';
 import Expense from '../../domain/models/Expense';
-
+export type ScanStackParamList = {
+  Scan: undefined;
+  ReceiptConfirmation: {
+    extractedData: Omit<Expense, 'id' | 'userId'>;
+    imageUri: string;
+    base64Image: string;
+  };
+};
 export type RootStackParamList = {
 
   Home: { newExpenseAdded?: boolean } | undefined;
-  Scan: undefined;
+
+  ScanStack: NavigatorScreenParams<ScanStackParamList>;
   Login: undefined;
   SignUp: undefined;
   Profile: undefined;
@@ -17,7 +25,7 @@ export type RootStackParamList = {
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-
+export type ReceiptConfirmationScreenRouteProp = RouteProp<ScanStackParamList, 'ReceiptConfirmation'>;
 export type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
 
 export type ExpenseDetailScreenRouteProp = RouteProp<RootStackParamList, 'ExpenseDetail'>;

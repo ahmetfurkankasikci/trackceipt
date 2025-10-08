@@ -1,17 +1,15 @@
 import { FC, useState } from 'react';
-import { View, Text, Button, Image, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, Button, Image, StyleSheet, Alert, ActivityIndicator, Pressable, ScrollView } from 'react-native';
 import {
   launchCamera,
   launchImageLibrary,
   Asset,
-  ImagePickerResponse, 
+  ImagePickerResponse,
 } from 'react-native-image-picker';
-import { useScanViewModel } from './useScanViewModel'; 
-import { useNavigation } from '@react-navigation/native';
-import { AppNavigationProp } from '../../navigation/types';
+import { useScanViewModel } from './useScanViewModel';
+import Icon from '../../components/Icon';
 
 const ScanScreen: FC = () => {
-  const navigation = useNavigation<AppNavigationProp>();
   const [selectedImage, setSelectedImage] = useState<Asset | null>(null);
 
   const { isLoading, error, analyzeReceipt } = useScanViewModel();
@@ -36,56 +34,57 @@ const ScanScreen: FC = () => {
   };
 
   const handleAnalyzeReceipt = async () => {
-    if (selectedImage?.base64) {
-      const success = await analyzeReceipt(selectedImage.base64);
-      if (success) {
-        setSelectedImage(null); 
-        navigation.navigate('Home', { newExpenseAdded: true });
-        navigation.goBack()
-      } else {
-        Alert.alert('İşlem Başarısız', 'Fiş analiz edilemedi. Lütfen hata mesajını kontrol edin veya tekrar deneyin.');
-      }
+    if (selectedImage?.base64 && selectedImage.uri) {
+      await analyzeReceipt(selectedImage.base64, selectedImage.uri);
     } else {
       Alert.alert('Hata', 'Lütfen önce bir fiş fotoğrafı seçin.');
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Fişi Analiz Et</Text>
-
-      <View style={styles.imageContainer}>
-        {selectedImage?.uri ? (
-          <Image source={{ uri: selectedImage.uri }} style={styles.image} />
-        ) : (
-          <Text style={styles.placeholderText}>Lütfen bir fotoğraf çekin veya galeriden seçin.</Text>
-        )}
-      </View>
-
-      {isLoading && (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#0000ff" />
-          <Text style={styles.loadingText}>Fiş analiz ediliyor, lütfen bekleyin...</Text>
+    <ScrollView>
+      <View style={styles.container}>
+        <View style={styles.iconContainer}>
+          <Icon name='ReceiptText' size={48} color='#1380EC' />
         </View>
-      )}
+        <Text style={styles.title}>Fişinizi Ekleyin</Text>
+        <Text style={styles.placeholderText}>Fişinizin fotoğrafını çekin veya galerinizden bir fotoğraf seçin.</Text>
+        <Pressable onPress={handleCameraLaunch} disabled={isLoading} style={[styles.baseButton, styles.buttonCamera]} >
+          <Icon name="Camera" size={24} color="white" />
+          <Text style={styles.textWhite}>Fotoğrafı Çek</Text>
+        </Pressable>
+        <Pressable onPress={handleGalleryLaunch} disabled={isLoading} style={[styles.baseButton, styles.buttonGallery]} >
+          <Icon name="Images" size={24} color="black" />
+          <Text style={styles.textBlack}>Galeriden Seç</Text>
+        </Pressable>
+        <View style={styles.imageContainer}>
+          {selectedImage?.uri ? (
+            <Image source={{ uri: selectedImage.uri }} style={styles.image} />
+          ) : (
+            <Text>a</Text>
+          )}
+        </View>
 
-      {error && !isLoading && (
-        <Text style={styles.errorText}>Hata: {error}</Text>
-      )}
+        {isLoading && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#0000ff" />
+            <Text style={styles.loadingText}>Fiş analiz ediliyor, lütfen bekleyin...</Text>
+          </View>
+        )}
 
-      <View style={styles.buttonContainer}>
-        <Button title="Kamerayı Kullan" onPress={handleCameraLaunch} disabled={isLoading} />
-        <Button title="Galeriden Seç" onPress={handleGalleryLaunch} disabled={isLoading} />
+        {error && !isLoading && (
+          <Text style={styles.errorText}>Hata: {error}</Text>
+        )}
+
+        <View style={styles.analyzeButton}>
+          <Button
+            title="Fişi Analiz Et"
+            onPress={handleAnalyzeReceipt}
+            disabled={!selectedImage || isLoading}
+          />
+        </View>
       </View>
-
-      <View style={styles.analyzeButton}>
-        <Button
-          title="Fişi Analiz Et"
-          onPress={handleAnalyzeReceipt}
-          disabled={!selectedImage || isLoading}
-        />
-      </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -94,12 +93,15 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'white',
+  },
+  iconContainer: {
+    marginBottom: 30,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   imageContainer: {
     width: '100%',
@@ -118,6 +120,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   placeholderText: {
+    textAlign: 'center',
+    fontSize: 16,
+    marginBottom: 30,
     color: '#aaa',
   },
   buttonContainer: {
@@ -142,6 +147,33 @@ const styles = StyleSheet.create({
     color: 'red',
     marginVertical: 10,
     textAlign: 'center',
+  },
+  textWhite: {
+    color: 'white',
+  },
+  textBlack: {
+    color: 'black',
+  },
+  buttonCamera: {
+    backgroundColor: '#137FEC',
+  },
+  buttonGallery: {
+    backgroundColor: '#E7EDF3',
+
+  },
+  baseButton: {
+    width: '100%',
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    gap: 10,
+    borderRadius: 10,
+    elevation: 4,
+    marginBottom: 10,
   }
 });
 

@@ -7,14 +7,14 @@ export interface AnalyzedExpenseData {
 
 export class AiVisionService {
     private readonly API_KEY = GEMINI_API_KEY;
-    private readonly API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${this.API_KEY}`;
+    private readonly API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${this.API_KEY}`;
 
 
     async analyzeReceipt(base64Image: string): Promise<AnalyzedExpenseData> {
         const prompt = `
       Bu bir alışveriş fişinin görselidir. Lütfen bu fişi analiz et ve aşağıdaki bilgileri içeren, başka hiçbir açıklama olmadan, sadece geçerli bir JSON nesnesi döndür:
       - "totalAmount": Fiştin genel toplam tutarı (sayı olarak).
-      - "shopName": Mağazanın veya işletmenin adı (metin olarak).
+      - "shopName": Mağazanın veya işletmenin adı (metin olarak ve kelimelerin sadece ilk harfi büyük harf olmalı).
       - "transactionDate": Fişin tarihi (YYYY-MM-DD formatında).
       Eğer bir bilgiyi bulamazsan, alanı null olarak bırak.
     `;

@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import { PermissionsAndroid, Platform } from 'react-native';
 import { useEffect } from 'react';
 import AppNavigator from './src/presentation/navigation/AppNavigator';
@@ -5,6 +6,7 @@ import 'reflect-metadata';
 import './src/core/di/container';
 import { Provider } from 'react-redux';
 import { store } from './src/core/redux/store';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 function App() {
   useEffect(() => {
     async function requestPermissions() {
@@ -29,9 +31,11 @@ function App() {
     requestPermissions();
   }, [])
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <Provider store={store}>
       <AppNavigator />
     </Provider>
+    </GestureHandlerRootView>
   );
 }
 
