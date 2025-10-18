@@ -18,7 +18,7 @@ const leftBackButton = (navigation: any) => (
 )
 export const ScanStackNavigator = () => {
     return (
-        <Stack.Navigator initialRouteName='ReceiptConfirmation'>
+        <Stack.Navigator>
             <Stack.Screen name='Scan' component={ScanScreen} options={({ navigation }) => ({ // navigation prop'una erişim için fonksiyon kullanıyoruz
                 headerTitle: 'Yeni Fiş', // Başlık metni
                 headerShadowVisible: false,

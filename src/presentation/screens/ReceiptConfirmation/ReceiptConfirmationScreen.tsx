@@ -17,7 +17,7 @@ const ReceiptConfirmationScreen: FC = () => {
         handleSave,
     } = useReceiptConfirmationViewModel();
     const [date, setDate] = useState(new Date());
-    const [isSheetVisible, setSheetVisible] = useState(false);
+    const [isSheetVisible, setSheetVisible] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('Market');
     return (
         <ScrollView contentContainerStyle={styles.container}>
@@ -40,7 +40,7 @@ const ReceiptConfirmationScreen: FC = () => {
                 </View>
                 <View style={styles.infoRow}>
                     <Text style={styles.label}>Kategori</Text>
-                    <TouchableOpacity style={styles.categoryButton}>
+                    <TouchableOpacity onPress={() => { setSheetVisible(true) }} style={styles.categoryButton}>
                         <Icon name="Utensils" size={16} color="#475569" />
                         <Text style={styles.categoryLabel}>Yemek</Text>
                     </TouchableOpacity>
@@ -65,7 +65,7 @@ const ReceiptConfirmationScreen: FC = () => {
             </View>
             <CategorySelectorModal isVisible={isSheetVisible}
                 onClose={() => setSheetVisible(false)}
-                categories={[]}
+                categories={["Market", "Yemek"]}
                 selectedCategory={selectedCategory}
                 onSave={(category: string) => {
                     setSelectedCategory(category);

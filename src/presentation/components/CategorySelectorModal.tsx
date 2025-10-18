@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import BottomSheet from '@gorhom/bottom-sheet'; // BottomSheetModal tipini import ediyoruz
+import { BottomSheetModal } from '@gorhom/bottom-sheet'; // BottomSheetModal tipini import ediyoruz
 import Icon from './Icon';
 
 
@@ -21,14 +21,15 @@ const CategorySelectorModal: React.FC<CategorySelectorModalProps> = ({
   onSave,
 }) => {
   // TypeScript Değişikliği: useRef'in tipini belirtiyoruz.
-  const sheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ['50%', '65%'], []);
+  const sheetRef = useRef<BottomSheetModal>(null);
+  const snapPoints = useMemo(() => [400], []);
 
   useEffect(() => {
     if (isVisible) {
-      sheetRef.current?.expand();
+      console.log('Modal açıldı')
+      sheetRef.current?.present();
     } else {
-      sheetRef.current?.close();
+      sheetRef.current?.dismiss();
     }
   }, [isVisible]);
 
@@ -46,12 +47,12 @@ const CategorySelectorModal: React.FC<CategorySelectorModalProps> = ({
   };
 
   return (
-    <BottomSheet
+    <BottomSheetModal
       ref={sheetRef}
-      index={-1}
+      index={0}
       snapPoints={snapPoints}
       enablePanDownToClose={true}
-      onClose={onClose}
+      onDismiss={onClose}
       backgroundStyle={styles.sheetBackground}
       handleIndicatorStyle={styles.handleIndicator}
     >
@@ -85,13 +86,13 @@ const CategorySelectorModal: React.FC<CategorySelectorModalProps> = ({
           </TouchableOpacity>
         </View>
       </View>
-    </BottomSheet>
+    </BottomSheetModal>
   );
 };
 
 // Stillerde değişiklik yok, aynı kalabilir.
 const styles = StyleSheet.create({
-  sheetBackground: { backgroundColor: '#FFFFFF', borderRadius: 24 },
+  sheetBackground: { backgroundColor: 'red', borderRadius: 24 },
   handleIndicator: { backgroundColor: '#E0E0E0' },
   contentContainer: { flex: 1, paddingHorizontal: 20 },
   title: {

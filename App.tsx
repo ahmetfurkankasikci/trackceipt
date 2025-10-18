@@ -7,6 +7,7 @@ import './src/core/di/container';
 import { Provider } from 'react-redux';
 import { store } from './src/core/redux/store';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 function App() {
   useEffect(() => {
     async function requestPermissions() {
@@ -22,7 +23,7 @@ function App() {
 
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const cameraGranted = granted['android.permission.CAMERA'] === PermissionsAndroid.RESULTS.GRANTED;
-          
+
         } catch (err) {
           console.warn(err);
         }
@@ -32,9 +33,11 @@ function App() {
   }, [])
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-    <Provider store={store}>
-      <AppNavigator />
-    </Provider>
+      <BottomSheetModalProvider>
+        <Provider store={store}>
+          <AppNavigator />
+        </Provider>
+      </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );
 }
