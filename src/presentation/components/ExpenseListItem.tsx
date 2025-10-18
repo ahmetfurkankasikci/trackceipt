@@ -21,7 +21,7 @@ const ExpenseListItem: FC<ExpenseListItemProps> = ({ expense, onNavigate }) => {
                         <Text style={styles.itemCategory}>{expense?.category || 'Kategorisiz'}</Text>
                     </View>
                 </View>
-                <View style={styles.amountContainer}><Text style={styles.itemAmount}>{expense.amount.toFixed(2)} TL</Text></View>
+                <View style={styles.amountContainer}><Text style={styles.itemAmount}>{expense.amount?.toFixed(2) ?? "0"} TL</Text></View>
 
             </View>
         </TouchableHighlight>
