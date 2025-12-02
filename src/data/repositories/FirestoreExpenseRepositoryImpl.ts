@@ -43,29 +43,26 @@ export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
         return;
       }
 
-      if (querySnapshot?.metadata?.hasPendingWrites) {
 
-        return;
-      }
 
       const expenses: Expense[] = querySnapshot.docs.map((doc) => {
         const data = doc.data() as any;
 
         try {
-         
+
           return {
             id: doc.id,
             userId: data.userId,
             amount: data.amount,
             category: data.category,
             categoryId: data.categoryId,
-            description: data.description,
+            shopName: data.shopName,
             date: (data.date as FirebaseFirestoreTypes.Timestamp).toDate(),
           };
         } catch (error) {
           console.error("Error mapping document data:", doc.id, error);
 
-          return null as any; 
+          return null as any;
         }
       });
 
@@ -80,7 +77,7 @@ export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
 
   async addExpense(expense: Expense): Promise<void> {
     try {
-     
+
       await this.expensesCollection.add(expense);
     } catch (error) {
       console.error("Firestore'a masraf eklenirken hata oluştu: ", error);

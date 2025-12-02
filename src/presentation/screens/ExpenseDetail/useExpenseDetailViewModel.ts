@@ -21,10 +21,10 @@ export const useExpenseDetailViewModel = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
 
-    
+
     const [isEditing, setIsEditing] = useState(false);
-    const [description, setDescription] = useState(initialExpense.description ?? "");
-    const [amount, setAmount] = useState(initialExpense.amount.toString());
+    const [shopName, setShopName] = useState(initialExpense.shopName ?? "");
+    const [amount, setAmount] = useState(initialExpense.amount ? initialExpense.amount.toString() : "");
     const [date, setDate] = useState(new Date(initialExpense.date));
 
     const [isLoading, setIsLoading] = useState(false);
@@ -39,31 +39,31 @@ export const useExpenseDetailViewModel = () => {
 
 
     const handleUpdate = async () => {
-        if (!description.trim() || !amount.trim()) {
-            Alert.alert('Hata', 'Açıklama ve tutar alanları boş bırakılamaz.');
+        if (!shopName.trim() || !amount.trim()) {
+            Alert.alert('Hata', 'Satıcı ve tutar alanları boş bırakılamaz.');
             return;
         }
         setIsLoading(true);
         try {
             const updatedExpense = {
                 ...initialExpense,
-                description,
+                shopName,
                 amount: parseFloat(amount.replace(',', '.')) || 0,
                 categoryId,
                 date,
             };
             await updateExpenseUseCase.execute(updatedExpense);
-            setIsEditing(false); 
+            setIsEditing(false);
             navigation.navigate('Home', { newExpenseAdded: true });
         } catch (error) {
             console.error("Güncelleme hatası:", error);
             Alert.alert('Güncelleme Başarısız', 'Masraf güncellenirken bir sorun oluştu. Lütfen tekrar deneyin.');
 
-           
+
         } finally {
             setIsLoading(false);
         }
     };
 
-    return { isEditing, setIsEditing, description, setDescription, amount, setAmount, date, setDate, isLoading, handleUpdate, initialExpense, setCategoryId, categories, categoryId,setCategoryModalVisible,isCategoryModalVisible,  };
+    return { isEditing, setIsEditing, shopName, setShopName, amount, setAmount, date, setDate, isLoading, handleUpdate, initialExpense, setCategoryId, categories, categoryId, setCategoryModalVisible, isCategoryModalVisible, };
 };

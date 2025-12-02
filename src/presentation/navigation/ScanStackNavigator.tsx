@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ScanScreen from '../screens/ScanScreen/ScanScreen';
+import ReceiptAnalysisLoadingScreen from '../screens/ReceiptAnalysisLoading/ReceiptAnalysisLoadingScreen';
 import ReceiptConfirmationScreen from '../screens/ReceiptConfirmation/ReceiptConfirmationScreen';
 import type { ScanStackParamList } from './types';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -19,17 +20,13 @@ const leftBackButton = (navigation: any) => (
 export const ScanStackNavigator = () => {
     return (
         <Stack.Navigator>
-            <Stack.Screen name='Scan' component={ScanScreen} options={({ navigation }) => ({ // navigation prop'una erişim için fonksiyon kullanıyoruz
-                headerTitle: 'Yeni Fiş', // Başlık metni
-                headerShadowVisible: false,
-                headerLeft: () => (
-                    // headerLeft bir fonksiyon olmalı ve bir bileşen döndürmelidir
-                    leftBackButton(navigation)
-                ),
-                headerTitleAlign: 'center',
-
-            })} />
-            <Stack.Screen name='ReceiptConfirmation' component={ReceiptConfirmationScreen} options={{ title: 'Fişi Onayla' }} />
+            <Stack.Screen name='Scan' component={ScanScreen} options={{
+                headerShown: false,
+            }} />
+            <Stack.Screen name='ReceiptAnalysisLoading' component={ReceiptAnalysisLoadingScreen} options={{
+                headerShown: false,
+            }} />
+            <Stack.Screen name='ReceiptConfirmation' component={ReceiptConfirmationScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 };

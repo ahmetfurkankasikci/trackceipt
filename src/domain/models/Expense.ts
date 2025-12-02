@@ -5,7 +5,7 @@ export default class Expense {
     public date: Date,
     public userId: string,
     public categoryId: string | null,
-    public description?: string,
+    public shopName?: string,
     public id?: string,
   ) { }
 }

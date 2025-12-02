@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { View, Text, Button, Image, StyleSheet, Alert, ActivityIndicator, Pressable, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Pressable } from 'react-native';
 import {
   launchCamera,
   launchImageLibrary,
@@ -8,173 +8,165 @@ import {
 } from 'react-native-image-picker';
 import { useScanViewModel } from './useScanViewModel';
 import Icon from '../../components/Icon';
+import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { AppNavigationProp } from '../../navigation/types';
 
 const ScanScreen: FC = () => {
   const [selectedImage, setSelectedImage] = useState<Asset | null>(null);
+  const navigation = useNavigation<AppNavigationProp>();
+  const insets = useSafeAreaInsets();
 
-  const { isLoading, error, analyzeReceipt } = useScanViewModel();
+  const { isLoading, analyzeReceipt } = useScanViewModel();
 
-  const handleImageSelection = (response: ImagePickerResponse) => {
+  const handleImageSelection = async (response: ImagePickerResponse) => {
     if (response.didCancel) {
-
+      // User cancelled
     } else if (response.errorCode) {
-
-      Alert.alert('Hata', 'Resim seçilirken bir sorun oluştu.');
+      // Handle error silently or show minimal feedback
     } else if (response.assets && response.assets.length > 0) {
-      setSelectedImage(response.assets[0]);
+      const asset = response.assets[0];
+      setSelectedImage(asset);
+
+      // Navigate to loading screen with image data
+      if (asset.base64 && asset.uri) {
+        navigation.navigate('ScanStack', {
+          screen: 'ReceiptAnalysisLoading',
+          params: {
+            base64Image: asset.base64,
+            imageUri: asset.uri,
+          },
+        });
+      }
     }
   };
 
   const handleCameraLaunch = () => {
-    launchCamera({ mediaType: 'photo', includeBase64: true, quality: 0.5 }, handleImageSelection);
+    launchCamera({
+      mediaType: 'photo',
+      includeBase64: true,
+      quality: 0.5
+    }, handleImageSelection);
   };
 
   const handleGalleryLaunch = () => {
-    launchImageLibrary({ mediaType: 'photo', includeBase64: true, quality: 0.5 }, handleImageSelection);
+    launchImageLibrary({
+      mediaType: 'photo',
+      includeBase64: true,
+      quality: 0.5
+    }, handleImageSelection);
   };
 
-  const handleAnalyzeReceipt = async () => {
-    if (selectedImage?.base64 && selectedImage.uri) {
-      await analyzeReceipt(selectedImage.base64, selectedImage.uri);
-    } else {
-      Alert.alert('Hata', 'Lütfen önce bir fiş fotoğrafı seçin.');
-    }
+  const handleBack = () => {
+    navigation.navigate('Home');
   };
+
+
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.iconContainer}>
-          <Icon name='ReceiptText' size={48} color='#1380EC' />
-        </View>
-        <Text style={styles.title}>Fişinizi Ekleyin</Text>
-        <Text style={styles.placeholderText}>Fişinizin fotoğrafını çekin veya galerinizden bir fotoğraf seçin.</Text>
-        <Pressable onPress={handleCameraLaunch} disabled={isLoading} style={[styles.baseButton, styles.buttonCamera]} >
-          <Icon name="Camera" size={24} color="white" />
-          <Text style={styles.textWhite}>Fotoğrafı Çek</Text>
+    <SafeAreaView style={styles.container}>
+      {/* X Button Header */}
+      <View style={[styles.header, { paddingTop: insets.top }]}>
+        <Pressable onPress={handleBack} style={styles.closeButton}>
+          <Icon name="X" size={24} color="#FFFFFF" />
         </Pressable>
-        <Pressable onPress={handleGalleryLaunch} disabled={isLoading} style={[styles.baseButton, styles.buttonGallery]} >
-          <Icon name="Images" size={24} color="black" />
-          <Text style={styles.textBlack}>Galeriden Seç</Text>
+      </View>
+
+      {/* Main Content */}
+      <View style={styles.content}>
+        {/* Camera Icon Circle */}
+        <Pressable onPress={handleCameraLaunch} style={styles.iconCircle}>
+          <Icon name="Camera" size={80} color="#00FF94" />
         </Pressable>
-        <View style={styles.imageContainer}>
-          {selectedImage?.uri ? (
-            <Image source={{ uri: selectedImage.uri }} style={styles.image} />
-          ) : (
-            <Text>a</Text>
-          )}
-        </View>
 
-        {isLoading && (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0000ff" />
-            <Text style={styles.loadingText}>Fiş analiz ediliyor, lütfen bekleyin...</Text>
-          </View>
-        )}
-
-        {error && !isLoading && (
-          <Text style={styles.errorText}>Hata: {error}</Text>
-        )}
-
-        <View style={styles.analyzeButton}>
-          <Button
-            title="Fişi Analiz Et"
-            onPress={handleAnalyzeReceipt}
-            disabled={!selectedImage || isLoading}
-          />
+        {/* Text Content */}
+        <View style={styles.textContent}>
+          <Text style={styles.mainHeading}>Makbuzunuzun fotoğrafını çekin</Text>
+          <Text style={styles.subtitle}>
+            Net bir fotoğraf çekerek en iyi sonuçları alın.
+          </Text>
         </View>
       </View>
-    </ScrollView>
+
+      {/* Bottom Button */}
+      <View style={[styles.bottomContainer, { paddingBottom: insets.bottom + 24 }]}>
+        <Pressable
+          onPress={handleGalleryLaunch}
+          disabled={isLoading}
+          style={[styles.galleryButton, isLoading && styles.galleryButtonDisabled]}
+        >
+          <Text style={styles.galleryButtonText}>Galeriden Seç</Text>
+        </Pressable>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: '#1A2F2F',
+  },
+  header: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  closeButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  content: {
+    flex: 1,
     alignItems: 'center',
-    backgroundColor: 'white',
+    justifyContent: 'center',
+    paddingHorizontal: 40,
   },
-  iconContainer: {
-    marginBottom: 30,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  imageContainer: {
-    width: '100%',
-    height: 300,
-    borderWidth: 2,
-    borderColor: '#ddd',
-    borderRadius: 10,
+  iconCircle: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(0, 255, 148, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
-    backgroundColor: '#fff',
+    marginBottom: 60,
   },
-  image: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 8,
-  },
-  placeholderText: {
-    textAlign: 'center',
-    fontSize: 16,
-    marginBottom: 30,
-    color: '#aaa',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    marginBottom: 20,
-  },
-  analyzeButton: {
-    width: '100%',
-  },
-  loadingContainer: {
+  textContent: {
     alignItems: 'center',
-    marginVertical: 10,
   },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#333',
-  },
-  errorText: {
-    color: 'red',
-    marginVertical: 10,
+  mainHeading: {
+    fontSize: 22,
+    fontWeight: '600',
+    color: '#FFFFFF',
     textAlign: 'center',
+    marginBottom: 12,
   },
-  textWhite: {
-    color: 'white',
+  subtitle: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.7)',
+    textAlign: 'center',
+    lineHeight: 20,
   },
-  textBlack: {
-    color: 'black',
+  bottomContainer: {
+    paddingHorizontal: 24,
+    paddingBottom: 40,
   },
-  buttonCamera: {
-    backgroundColor: '#137FEC',
-  },
-  buttonGallery: {
-    backgroundColor: '#E7EDF3',
-
-  },
-  baseButton: {
-    width: '100%',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    display: 'flex',
-    flexDirection: 'row',
+  galleryButton: {
+    backgroundColor: '#00FF94',
+    paddingVertical: 18,
+    borderRadius: 12,
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
-    gap: 10,
-    borderRadius: 10,
-    elevation: 4,
-    marginBottom: 10,
-  }
+  },
+  galleryButtonDisabled: {
+    opacity: 0.6,
+  },
+  galleryButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1A2F2F',
+  },
 });
 
 export default ScanScreen;

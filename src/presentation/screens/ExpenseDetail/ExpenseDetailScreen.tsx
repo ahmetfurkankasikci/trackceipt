@@ -4,7 +4,7 @@ import DatePicker from 'react-native-date-picker';
 import { useExpenseDetailViewModel } from './useExpenseDetailViewModel';
 
 const ExpenseDetailScreen: FC = () => {
-    const { isEditing, setIsEditing, description, setDescription, amount, setAmount, date, setDate, isLoading, handleUpdate, initialExpense, setCategoryModalVisible, isCategoryModalVisible, categories, setCategoryId, categoryId } = useExpenseDetailViewModel();
+    const { isEditing, setIsEditing, shopName, setShopName, amount, setAmount, date, setDate, isLoading, handleUpdate, initialExpense, setCategoryModalVisible, isCategoryModalVisible, categories, setCategoryId, categoryId } = useExpenseDetailViewModel();
     const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
     const selectedCategory = useMemo(() => categories.find(c => c.id === categoryId), [categories, categoryId]);
@@ -27,8 +27,8 @@ const ExpenseDetailScreen: FC = () => {
 
     return (
         <View style={styles.container}>
-            {renderField("Açıklama", initialExpense.description ?? "", description ?? "", setDescription)}
-            {renderField("Tutar (TL)", initialExpense.amount ? initialExpense.amount.toFixed(2):"0", amount, setAmount, 'numeric')}
+            {renderField("Satıcı", initialExpense.shopName ?? "", shopName ?? "", setShopName)}
+            {renderField("Tutar (TL)", initialExpense.amount ? initialExpense.amount.toFixed(2) : "0", amount, setAmount, 'numeric')}
 
             <View style={styles.fieldContainer}>
                 <Text style={styles.label}>Kategori</Text>

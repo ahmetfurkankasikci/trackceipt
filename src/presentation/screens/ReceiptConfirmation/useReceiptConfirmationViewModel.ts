@@ -1,28 +1,57 @@
-import { useState, useMemo } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useState, useMemo, useEffect } from 'react';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { container } from 'tsyringe';
 import { AddExpenseUseCase } from '../../../domain/usecases/AddExpenseUseCase';
-import type { AppNavigationProp } from '../../navigation/types';
+import type { AppNavigationProp, ScanStackParamList } from '../../navigation/types';
 import type { AppRootState } from '../../../core/redux/store';
 import type Expense from '../../../domain/models/Expense';
 
+type ReceiptConfirmationRouteProp = RouteProp<ScanStackParamList, 'ReceiptConfirmation'>;
+
 export const useReceiptConfirmationViewModel = () => {
-    //const route = useRoute<ReceiptConfirmationScreenRouteProp>();
+    const route = useRoute<ReceiptConfirmationRouteProp>();
     const navigation = useNavigation<AppNavigationProp>();
     const { user } = useSelector((state: AppRootState) => state.auth);
 
     // Gerekli UseCase'i DI container'dan alıyoruz.
     const addExpenseUseCase = useMemo(() => container.resolve(AddExpenseUseCase), []);
 
-    //const { extractedData, imageUri } = route.params;
+    const { extractedData, imageUri } = route.params;
 
-    // Formun durumunu tutan state'ler
+    // Formun durumunu tutan state'ler - Initialize with API data
     const [amount, setAmount] = useState('');
-    const [description, setDescription] = useState('');
+    const [shopName, setShopName] = useState('');
     const [date, setDate] = useState(new Date());
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    // Populate form with extracted data when component mounts
+    useEffect(() => {
+        if (extractedData) {
+            // Set amount
+            if (extractedData.amount !== null && extractedData.amount !== undefined) {
+                setAmount(extractedData.amount.toString());
+            }
+
+            // Set description (shop name)
+            const data = extractedData as any;
+            if (data.shopName) {
+                setShopName(data.shopName);
+            } else if (data.description) {
+                setShopName(data.description);
+            }
+
+            // Set date
+            if (extractedData.date) {
+                setDate(new Date(extractedData.date));
+            }
+        }
+    }, [extractedData]);
+
+    const handleCancel = () => {
+        navigation.navigate('ScanStack', { screen: 'Scan' });
+    };
 
     const handleSave = async () => {
         if (!user) {
@@ -43,7 +72,7 @@ export const useReceiptConfirmationViewModel = () => {
                 category: 'Analiz Edildi',
                 userId: user.uid,
                 amount: parsedAmount,
-                description,
+                shopName,
                 date,
                 categoryId: null, // Kategori daha sonra atanabilir
                 //receiptImageUrl: null, // TODO: Firebase Storage'a yükleme eklenecek
@@ -62,12 +91,14 @@ export const useReceiptConfirmationViewModel = () => {
     return {
         amount,
         setAmount,
-        description,
-        setDescription,
+        shopName,
+        setShopName,
         date,
         setDate,
         isLoading,
         error,
         handleSave,
+        handleCancel,
+        imageUri,
     };
 };
