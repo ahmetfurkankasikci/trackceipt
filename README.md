@@ -120,11 +120,3 @@ Bu projenin çalışabilmesi için bir Firebase projesine bağlanması gerekmekt
     ```bash
     npx react-native run-android
     ```
-
----
-
-## 🖼️ Ekran Görüntüleri
-
-| Giriş Ekranı | Ana Ekran | Fiş Tarama | Kategori Yönetimi |
-| :---: | :---: | :---: | :---: |
-| ![Giriş Ekranı](.github/screenshots/Screenshot_4.png) | ![Ana Ekran](.github/screenshots/Screenshot_2.png) | ![Fiş Tarama](.github/screenshots/Screenshot_3.png) | ![Kategori Yönetimi](.github/screenshots/Screenshot_1.png) |
