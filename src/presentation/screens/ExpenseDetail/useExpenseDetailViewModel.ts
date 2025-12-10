@@ -8,6 +8,7 @@ import { GetAllCategoriesUseCase } from '../../../domain/usecases/CategoryUseCas
 import Category from '../../../domain/models/Category';
 import { AppRootState } from '../../../core/redux/store';
 import { useSelector } from 'react-redux';
+import Logger from '../../../utils/Logger';
 
 export const useExpenseDetailViewModel = () => {
     const route = useRoute<ExpenseDetailScreenRouteProp>();
@@ -56,7 +57,7 @@ export const useExpenseDetailViewModel = () => {
             setIsEditing(false);
             navigation.navigate('Home', { newExpenseAdded: true });
         } catch (error) {
-            console.error("Güncelleme hatası:", error);
+            Logger.error("Güncelleme hatası:", error);
             Alert.alert('Güncelleme Başarısız', 'Masraf güncellenirken bir sorun oluştu. Lütfen tekrar deneyin.');
 
 

@@ -1,6 +1,7 @@
 import Category from "../../domain/models/Category";
 import { ICategoryRepository } from "../../domain/repositories/ICategoryRepository";
 import firestore from '@react-native-firebase/firestore';
+import Logger from '../../utils/Logger';
 
 
 export class FirestoreCategoryRepositoryImpl implements ICategoryRepository {
@@ -15,11 +16,10 @@ export class FirestoreCategoryRepositoryImpl implements ICategoryRepository {
     }
     async addCategory(category: Category): Promise<void> {
         try {
-            console.log(this.collection)
-            console.log(category);
+            Logger.info('Adding category', category);
             await this.collection.add(category);
         } catch (error) {
-            console.error("Firestore'a kategori eklenirken hata oluştu: ", error);
+            Logger.error("Firestore'a kategori eklenirken hata oluştu: ", error);
             throw new Error('Kategori eklenemedi.');
         }
 

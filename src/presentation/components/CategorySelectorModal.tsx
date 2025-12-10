@@ -2,6 +2,7 @@ import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet'; // BottomSheetModal tipini import ediyoruz
 import Icon from './Icon';
+import Logger from '../../utils/Logger';
 
 
 // TypeScript Değişikliği: Component'in alacağı proplar için bir arayüz (interface) tanımlıyoruz.
@@ -26,7 +27,7 @@ const CategorySelectorModal: React.FC<CategorySelectorModalProps> = ({
 
   useEffect(() => {
     if (isVisible) {
-      console.log('Modal açıldı')
+      Logger.info('Modal açıldı')
       sheetRef.current?.present();
     } else {
       sheetRef.current?.dismiss();

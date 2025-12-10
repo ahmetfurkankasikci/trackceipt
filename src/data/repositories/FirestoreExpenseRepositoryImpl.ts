@@ -3,6 +3,7 @@ import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firest
 
 import Expense from '../../domain/models/Expense';
 import { IExpenseRepository } from '../../domain/repositories/IExpenseRepository';
+import Logger from '../../utils/Logger';
 
 export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
   async updateExpense(expense: Expense): Promise<void> {
@@ -11,7 +12,7 @@ export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
       const expenseDocRef = this.expensesCollection.doc(id);
       await expenseDocRef.update(dataToUpdate);
     } catch (error) {
-      console.error("Firestore'da masraf güncellenirken hata oluştu: ", error);
+      Logger.error("Firestore'da masraf güncellenirken hata oluştu: ", error);
       throw new Error('Masraf güncellenemedi.');
     }
   }
@@ -20,7 +21,7 @@ export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
 
       await firestore().collection('expenses').doc(expenseId).delete();
     } catch (error) {
-      console.error("Firestore'dan masraf silinirken hata oluştu: ", error);
+      Logger.error("Firestore'dan masraf silinirken hata oluştu: ", error);
       throw new Error('Masraf silinemedi.');
     }
   }
@@ -39,7 +40,7 @@ export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
     const unsubscribe = query.onSnapshot((querySnapshot) => {
 
       if (!querySnapshot) {
-        console.error("querySnapshot is null or undefined.");
+        Logger.error("querySnapshot is null or undefined.");
         return;
       }
 
@@ -60,7 +61,7 @@ export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
             date: (data.date as FirebaseFirestoreTypes.Timestamp).toDate(),
           };
         } catch (error) {
-          console.error("Error mapping document data:", doc.id, error);
+          Logger.error("Error mapping document data:", error);
 
           return null as any;
         }
@@ -80,7 +81,7 @@ export class FirestoreExpenseRepositoryImpl implements IExpenseRepository {
 
       await this.expensesCollection.add(expense);
     } catch (error) {
-      console.error("Firestore'a masraf eklenirken hata oluştu: ", error);
+      Logger.error("Firestore'a masraf eklenirken hata oluştu: ", error);
       throw new Error('Masraf eklenemedi.');
     }
   }

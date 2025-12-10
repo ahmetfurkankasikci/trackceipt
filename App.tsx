@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import { store } from './src/core/redux/store';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import Logger from './src/utils/Logger';
 function App() {
   useEffect(() => {
     async function requestPermissions() {
@@ -25,7 +26,7 @@ function App() {
           const cameraGranted = granted['android.permission.CAMERA'] === PermissionsAndroid.RESULTS.GRANTED;
 
         } catch (err) {
-          console.warn(err);
+          Logger.error('Permission request failed', err);
         }
       }
     }

@@ -6,6 +6,7 @@ import { AddExpenseUseCase } from '../../../domain/usecases/AddExpenseUseCase';
 import type { AppNavigationProp, ScanStackParamList } from '../../navigation/types';
 import type { AppRootState } from '../../../core/redux/store';
 import type Expense from '../../../domain/models/Expense';
+import Logger from '../../../utils/Logger';
 
 type ReceiptConfirmationRouteProp = RouteProp<ScanStackParamList, 'ReceiptConfirmation'>;
 
@@ -81,7 +82,7 @@ export const useReceiptConfirmationViewModel = () => {
             // Başarıyla kaydedildikten sonra ana ekrana dön ve güncelleme olduğunu bildir.
             navigation.navigate('Home', { newExpenseAdded: true });
         } catch (err) {
-            console.error('Masraf kaydedilirken hata oluştu:', err);
+            Logger.error('Masraf kaydedilirken hata oluştu:', err);
             setError('Masraf kaydedilemedi. Lütfen tekrar deneyin.');
         } finally {
             setIsLoading(false);

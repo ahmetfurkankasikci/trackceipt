@@ -3,9 +3,10 @@ import Icon from "../components/Icon";
 import { FC } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Logger from '../../utils/Logger';
 
 const CustomTabBar: FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
-    console.log(descriptors);
+    Logger.info('Descriptors', descriptors);
     const insets = useSafeAreaInsets();
     const textColor = (num: number) => ({ color: state.index === num ? '#10B981' : '#9CA3AF' });
 

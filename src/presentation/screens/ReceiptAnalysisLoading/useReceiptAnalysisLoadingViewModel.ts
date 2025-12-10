@@ -3,6 +3,7 @@ import { useEffect, useRef, useMemo, useState } from 'react';
 import { container } from 'tsyringe';
 import { AnalyzeReceiptUseCase } from '../../../domain/usecases/AnalyzeReceiptUseCase';
 import type { AppNavigationProp, ScanStackParamList } from '../../navigation/types';
+import Logger from '../../../utils/Logger';
 
 type ReceiptAnalysisLoadingRouteProp = RouteProp<ScanStackParamList, 'ReceiptAnalysisLoading'>;
 
@@ -40,12 +41,12 @@ export const useReceiptAnalysisLoadingViewModel = () => {
             } catch (error: any) {
                 // If request was aborted, don't show error (user cancelled)
                 if (error.name === 'AbortError') {
-                    console.log('Analysis cancelled by user');
+                    Logger.info('Analysis cancelled by user');
                     return;
                 }
 
                 // For other errors, show error state
-                console.error('Analysis failed:', error);
+                Logger.error('Analysis failed:', error);
                 setError('Analiz başarısız oldu.');
             }
         };

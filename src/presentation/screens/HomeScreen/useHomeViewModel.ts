@@ -7,6 +7,7 @@ import { DeleteExpenseUseCase } from '../../../domain/usecases/DeleteExpenseUseC
 import { AppRootState } from '../../../core/redux/store';
 import Category from '../../../domain/models/Category';
 import { GetAllCategoriesUseCase } from '../../../domain/usecases/CategoryUseCases';
+import Logger from '../../../utils/Logger';
 
 export const useHomeViewModel = () => {
   const getExpensesUseCase = useMemo(() => container.resolve(GetExpensesUseCase), []);
@@ -56,7 +57,7 @@ export const useHomeViewModel = () => {
     try {
       await deleteExpenseUseCase.execute(expenseId);
     } catch (error) {
-      console.error("Masraf silinemedi:", error);
+      Logger.error("Masraf silinemedi:", error);
     } finally {
       setDeletingId(null);
     }

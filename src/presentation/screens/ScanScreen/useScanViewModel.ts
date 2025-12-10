@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { container } from 'tsyringe';
 import { AnalyzeReceiptUseCase } from '../../../domain/usecases/AnalyzeReceiptUseCase';
 import type { AppNavigationProp } from '../../navigation/types';
+import Logger from '../../../utils/Logger';
 
 export const useScanViewModel = () => {
   const navigation = useNavigation<AppNavigationProp>();
@@ -26,7 +27,7 @@ export const useScanViewModel = () => {
       });
       return true;
     } catch (err: any) {
-      console.error('Fiş analiz edilirken hata oluştu:', err);
+      Logger.error('Fiş analiz edilirken hata oluştu:', err);
       setError(err.message || 'Fiş analiz edilemedi.');
       return false;
     } finally {

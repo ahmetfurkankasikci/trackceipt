@@ -1,6 +1,7 @@
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { IAuthRepository } from '../../domain/repositories/IAuthRepository';
-import User  from '../../domain/models/User';
+import User from '../../domain/models/User';
+import Logger from '../../utils/Logger';
 
 export class FirebaseAuthRepositoryImpl implements IAuthRepository {
 
@@ -13,7 +14,7 @@ export class FirebaseAuthRepositoryImpl implements IAuthRepository {
                 email: firebaseUser.email,
             };
         } catch (error: any) {
-            console.error("Login Error:", error.code, error.message);
+            Logger.error(error.message, error.code);
             throw new Error('Giriş işlemi başarısız oldu. Lütfen bilgilerinizi kontrol edin.');
         }
     }
@@ -27,7 +28,7 @@ export class FirebaseAuthRepositoryImpl implements IAuthRepository {
                 email: firebaseUser.email,
             };
         } catch (error: any) {
-            console.error("SignUp Error:", error.code, error.message);
+            Logger.error(error.message, error.code);
             throw new Error('Kayıt işlemi başarısız oldu.');
         }
     }
@@ -36,7 +37,7 @@ export class FirebaseAuthRepositoryImpl implements IAuthRepository {
         try {
             await auth().signOut();
         } catch (error: any) {
-            console.error("Logout Error:", error.message);
+            Logger.error("Logout Error:", error.message);
             throw new Error('Çıkış işlemi başarısız oldu.');
         }
     }
